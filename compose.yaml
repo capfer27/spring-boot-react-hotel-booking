@@ -19,29 +19,33 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
-  app:
-#    build: .
-    # Format: username/project-name:tag
-    image: caito25/hotelbooking:latest
-    pull_policy: missing # Tells Docker to use the local Jib build first
-    container_name: spring_hotel_booking_app
-    ports:
-      - "9090:9090"
-    healthcheck:
-      test: [ "CMD", "curl", "-f", "http://localhost:9090/actuator/health" ]
-      interval: 30s
-      timeout: 10s
-      retries: 3
-    environment:
-      # Overrides application.yml to use the 'db' service name instead of 'localhost'
-      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_db:5432/hotel_bookings
-      SPRING_DATASOURCE_USERNAME: postgres
-      SPRING_DATASOURCE_PASSWORD: secret2026
-    depends_on:
-      postgres_db:
-        condition: service_healthy
-    networks:
-      - spring-hotel-booking-net
+  ## App: Only starts when you explicitly run the 'fully-dockerized' profile
+#  app:
+##    build: .
+#    # Format: username/project-name:tag
+#    image: caito25/hotelbooking:latest
+#    pull_policy: missing # Tells Docker to use the local Jib build first
+#    container_name: spring_hotel_booking_app
+#    ports:
+#      - "9090:9090"
+#    healthcheck:
+#      test: [ "CMD", "curl", "-f", "http://localhost:9090/actuator/health" ]
+#      interval: 30s
+#      timeout: 10s
+#      retries: 3
+#    environment:
+#      # Overrides application.yml to use the 'db' service name instead of 'localhost'
+#      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_db:5432/hotel_bookings
+#      SPRING_DATASOURCE_USERNAME: postgres
+#      SPRING_DATASOURCE_PASSWORD: secret2026
+#    depends_on:
+#      postgres_db:
+#        condition: service_healthy
+#    networks:
+#      - spring-hotel-booking-net
+    # This prevents Spring Boot from starting a duplicate app container
+    # when you are already running the code in IntelliJ.
+    #profiles: ["fully-dockerized"]  # <--- THE KEY CONFIGURATION
 
 networks:
   spring-hotel-booking-net:

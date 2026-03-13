@@ -7,7 +7,7 @@ spring:
   # Postgres Connections
   datasource:
     # 'db' matches the service name in your docker-compose.yml
-    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://postgres_db:5432/hotel_bookings}
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/hotel_bookings}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
     password: ${SPRING_DATASOURCE_PASSWORD:secret2026}
     driver-class-name: org.postgresql.Driver

@@ -1,0 +1,16 @@
+# 1. Use the Java 25 Runtime
+FROM eclipse-temurin:25-jre-alpine
+
+# 2. Define where the app lives (Best Practice)
+WORKDIR /app
+
+# 3. Create the temp volume for Tomcat/Hibernate cache
+VOLUME /tmp
+
+# 4. Copy the jar from your Gradle build folder
+# Note: Gradle puts jars in build/libs/
+COPY build/libs/*.jar app.jar
+
+# 5. Run the app
+# Use -Djava.security.egd to speed up Tomcat startup in containers
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "app.jar"]
