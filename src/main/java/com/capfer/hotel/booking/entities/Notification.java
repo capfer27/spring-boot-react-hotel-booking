@@ -41,7 +41,7 @@ public class Notification {
     private NotificationType notificationType;
 
     @Column(name = "created_at", nullable = false, updatable = false)
-    private LocalDateTime createdAt = LocalDateTime.now();
+    private final LocalDateTime createdAt = LocalDateTime.now();
 
     @Override
     public boolean equals(Object o) {
