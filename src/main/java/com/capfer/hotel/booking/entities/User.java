@@ -60,6 +60,15 @@ public class User {
         booking.setUser(this);
     }
 
+    //In most financial modules, you should keep the PaymentEntity as the "owner" of the relationship.
+    //Avoid putting List<Payment> inside the User entity unless you frequently need to display
+    // a user's entire billing history every time you load their profile.
+    //Why? Over years, a user may have hundreds of payment attempts (succeeded, failed, refunded).
+    // Loading this list automatically is a performance killer.
+    // Keep this LAZY. Never make a payment list EAGER.
+    //@OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    //private List<PaymentEntity> payments = new ArrayList<>();
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
