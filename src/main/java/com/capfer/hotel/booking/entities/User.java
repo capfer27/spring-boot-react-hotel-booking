@@ -6,6 +6,8 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Setter
@@ -17,10 +19,9 @@ import java.util.Objects;
 public class User {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", nullable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
 
     @NotBlank(message = "Email is required")
     @Column(name = "email",unique = true, nullable = false)
@@ -47,6 +48,17 @@ public class User {
 
     private Boolean isActive;
     private final LocalDateTime createdAt = LocalDateTime.now();
+
+    // mappedBy points to the field name in the Booking class
+    // orphanRemoval ensures that if a booking is removed from the list, it's deleted from DB
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Booking> bookings = new ArrayList<>();
+
+    // Helper method to keep both sides of the relationship in sync
+    public void addBooking(Booking booking) {
+        bookings.add(booking);
+        booking.setUser(this);
+    }
 
     @Override
     public boolean equals(Object o) {

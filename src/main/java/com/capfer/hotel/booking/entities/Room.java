@@ -15,9 +15,13 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Setter
-@Getter
 public class Room {
+
+    // NOTE: We intentionally do NOT have a List<Booking> here.
+    //Why? A popular room will have hundreds of bookings over a year.
+    //Loading a Room would force Hibernate to manage a massive list in memory, killing performance.
+    //The Solution: Keep it "Unidirectional" from the Booking side.
+    //If you need to find bookings for a room, use a Repository Query.
 
     @Id
     @Column(name = "id")
