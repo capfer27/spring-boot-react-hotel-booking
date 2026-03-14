@@ -13,12 +13,36 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     hibernate:
-      ddl-auto: update # Options: none, validate, update, create, create-drop
+      ddl-auto: validate # Options: non e, validate, update, create, create-drop
     show-sql: true
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.PostgreSQLDialect
+        #dialect: org.hibernate.dialect.PostgreSQLDialect
         format_sql: true
+  flyway:
+    # Prevents Flyway from running 'DROP' commands (clean) in production
+    clean-disabled: true
+
+    # Allows Flyway to run again if a migration failed and you fixed the metadata
+    repair-on-migrate: true
+
+    # If someone manually changed the DB, this prevents the app from starting
+    # until the migration scripts match the DB state exactly.
+    validate-on-migrate: true
+
+    # Useful if you are adding Flyway to an EXISTING database that already has tables
+    #baseline-on-migrate: true
+    #baseline-version: "1.0"
+
+    # Set this to false if you have scripts that CANNOT run in a transaction
+    # (like Postgres concurrent index creation)
+    #group: false
+
+    # How long to wait for a table lock before failing
+    lock-retry-count: 10
+
+    # Automatically clear and re-run migrations on every start (Careful!)
+    #clean-on-validation-error: true
 
   # Ensure your app works with the health checks we set up earlier
 management:
@@ -29,5 +53,11 @@ management:
   endpoint:
     health:
       show-details: always
+
+logging:
+  level:
+    org.flywaydb: DEBUG
+    # Optional: If you want to see the low-level JDBC calls
+    org.springframework.jdbc.core.JdbcTemplate: DEBUG
 
 
