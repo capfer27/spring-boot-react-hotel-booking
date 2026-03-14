@@ -60,4 +60,12 @@ logging:
     # Optional: If you want to see the low-level JDBC calls
     org.springframework.jdbc.core.JdbcTemplate: DEBUG
 
+# Generate a unique secret key for JWT signing (or use an environment variable)
+jwt:
+    # 40 characters is a good length for a secret key
+    secret-key: ertYuiopASDFGHJKLzxcvbnmQWERTYUIOP123456
+    expiration: 3600000 # 1 hour in milliseconds
+    # 24 hours in milliseconds
+    refresh-token-expiration: 86400000 // 7 days in milliseconds
+
 
