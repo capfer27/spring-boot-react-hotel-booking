@@ -48,6 +48,20 @@ public class Room {
     @Column(name = "image_url")
     private String imageUrl; // this will hold the room picture
 
+    // Read-only mapping for the Postgres `search_vector` column.
+    // It's populated/maintained by the database (trigger or generated column).
+    // Marking insertable=false, updatable=false prevents JPA from including it in INSERT/UPDATE statements
+    // so it won't break inserts or updates coming from the application.
+    @Column(name = "search_vector", insertable = false, updatable = false, columnDefinition = "TEXT")
+    @Setter(AccessLevel.NONE) // Lombok will not generate a setter for this field, keeping it read-only in the application.
+    @Getter
+    private String searchVector;
+
+//    // Provide a getter only to keep the field read-only in the application.
+//    public String getSearchVector() {
+//        return searchVector;
+//    }
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
