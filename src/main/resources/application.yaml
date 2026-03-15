@@ -44,6 +44,20 @@ spring:
     # Automatically clear and re-run migrations on every start (Careful!)
     #clean-on-validation-error: true
 
+# Mail configuration for sending booking confirmations
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: capfer27@gmail.com # represent your email address here, e.g., example@gmail.com
+    password: jyri fxdz czop zqgt
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
+            required: true
+
   # Ensure your app works with the health checks we set up earlier
 management:
   endpoints:
