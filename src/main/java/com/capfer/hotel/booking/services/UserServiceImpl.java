@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
 
         return ResponseDTO.builder()
                 .message("User registered successfully")
-                .statusCode(HttpStatus.OK.value())
+                .statusCode(HttpStatus.CREATED.value())
                 .build();
     }
 
