@@ -4,8 +4,17 @@ spring:
   application:
     name: HotelBooking
 
+  threads:
+    virtual:
+      enabled: false
+
   # Postgres Connections
   datasource:
+    hikari:
+      maximum-pool-size: 50 # Adjust based on your DB instance size
+      minimum-idle: 10
+      connection-timeout: 20000 # 20 seconds
+      idle-timeout: 300000
     # 'db' matches the service name in your docker-compose.yml
     url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/hotel_bookings}
     username: ${SPRING_DATASOURCE_USERNAME:postgres}
@@ -58,6 +67,11 @@ spring:
             enable: true
             required: true
 
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
   # Ensure your app works with the health checks we set up earlier
 management:
   endpoints:
@@ -69,6 +83,8 @@ management:
       show-details: always
 
 logging:
+  pattern:
+    level: "%5p [thread: %t] %m%n"
   level:
     org.flywaydb: DEBUG
     # Optional: If you want to see the low-level JDBC calls
