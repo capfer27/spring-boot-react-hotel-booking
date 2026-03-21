@@ -67,10 +67,11 @@ spring:
             enable: true
             required: true
 
+  # The maximum size of image that can be uploaded.
   servlet:
     multipart:
-      max-file-size: 10MB
-      max-request-size: 10MB
+      max-file-size: 100MB
+      max-request-size: 100MB
 
   # Ensure your app works with the health checks we set up earlier
 management:
