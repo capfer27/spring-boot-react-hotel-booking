@@ -3,6 +3,7 @@ package com.capfer.hotel.booking.dtos;
 import com.capfer.hotel.booking.entities.Booking;
 import com.capfer.hotel.booking.enums.RoomType;
 import com.capfer.hotel.booking.enums.UserRole;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
@@ -32,6 +33,7 @@ public class UserDTO {
 
     private String email;
 
+    @JsonIgnore
     private String password;
 
     private String firstName;
