@@ -15,6 +15,8 @@ import java.util.Objects;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Getter
+@Setter
 public class Room {
 
     // NOTE: We intentionally do NOT have a List<Booking> here.

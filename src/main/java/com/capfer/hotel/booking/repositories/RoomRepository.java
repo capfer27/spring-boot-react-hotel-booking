@@ -51,9 +51,9 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
         SELECT r FROM Room r
         WHERE (r.roomType IS NULL OR r.roomType = :roomType)
         AND NOT EXISTS (
-            SELECT 1 FROM Booking b\s
-            WHERE b.room = r\s
-            AND b.checkInDate <= :checkOutDate\s
+            SELECT 1 FROM Booking b
+            WHERE b.room = r
+            AND b.checkInDate <= :checkOutDate
             AND b.checkOutDate >= :checkInDate
             AND b.bookingStatus IN ('BOOKED', 'CHECKED_IN')
         )
@@ -61,7 +61,7 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
     List<Room> findAvailableRoomsOptimized(
             @Param("checkInDate") LocalDate checkInDate,
             @Param("checkOutDate") LocalDate checkOutDate,
-            @Param("roomType") String roomType
+            @Param("roomType") RoomType roomType
     );
 
     @Query("""
