@@ -6,6 +6,7 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
 import java.util.Objects;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @AllArgsConstructor
 @Getter
 @Setter
+@DynamicUpdate
 public class Room {
 
     // NOTE: We intentionally do NOT have a List<Booking> here.

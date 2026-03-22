@@ -38,7 +38,7 @@ public class RoomController {
         return ResponseEntity.ok(responseDTO);
     }
 
-    @PostMapping(path = "/update")
+    @PutMapping(path = "/update")
     @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ResponseDTO> updateRoom(UpdateBookingRequest request) {
 
@@ -88,7 +88,7 @@ public class RoomController {
     }
 
     @GetMapping(path = "/search")
-    public ResponseEntity<ResponseDTO> searchRoom(@RequestParam(value = "searchTerm") String searchTerm) {
-        return ResponseEntity.ok(roomService.searchRooms(searchTerm));
+    public ResponseEntity<ResponseDTO> searchRoom(@RequestParam(value = "term") String term) {
+        return ResponseEntity.ok(roomService.searchRooms(term));
     }
 }

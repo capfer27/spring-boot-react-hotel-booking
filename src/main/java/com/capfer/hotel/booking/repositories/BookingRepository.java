@@ -55,4 +55,10 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     List<Booking> findByUserId(Long userId);
 
     Optional<Booking> findByBookingReference(String bookingReference);
+
+    @Query("SELECT b.room.id FROM Booking b WHERE " +
+            "b.checkInDate < :checkOutDate AND b.checkOutDate > :checkInDate")
+    List<Long> findBookedRoomIds(LocalDate checkInDate, LocalDate checkOutDate);
+
+
 }

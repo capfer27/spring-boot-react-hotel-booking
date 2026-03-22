@@ -47,16 +47,36 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
 //            )
 //            AND (r.roomType IS NULL OR r.roomType = :roomType)
 //        """)
+
+    /**
+     * Notes:
+     * 1. :roomType IS NULL: If you pass null from your Java code, this part becomes TRUE.
+     * Because it is joined with an OR, the second part (r.roomType = :roomType) is ignored,
+     * effectively disabling the room type filter.
+     *
+     * 2. r.roomType = :roomType: If you pass a specific RoomType, the first part is FALSE,
+     * forcing the query to match only rooms that strictly equal your provided type.
+     *
+     * 3. Optimize for Overlapping Dates
+     * A common issue in booking systems is the "same-day" conflict (e.g., one guest checks out at 10 AM, another checks in at 2 PM).
+     * The current query uses <= and >=.
+     * To allow a room to be booked on the same day someone else leaves, use exclusive boundaries: < and >
+     *
+     * @param checkInDate
+     * @param checkOutDate
+     * @param roomType
+     * @return
+     */
     @Query("""
         SELECT r FROM Room r
-        WHERE (r.roomType IS NULL OR r.roomType = :roomType)
-        AND NOT EXISTS (
+        WHERE NOT EXISTS (
             SELECT 1 FROM Booking b
             WHERE b.room = r
-            AND b.checkInDate <= :checkOutDate
-            AND b.checkOutDate >= :checkInDate
+            AND b.checkInDate < :checkOutDate
+            AND b.checkOutDate > :checkInDate
             AND b.bookingStatus IN ('BOOKED', 'CHECKED_IN')
         )
+        AND (:roomType IS NULL OR r.roomType = :roomType)
     """)
     List<Room> findAvailableRoomsOptimized(
             @Param("checkInDate") LocalDate checkInDate,
@@ -77,5 +97,9 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
 
     @Query("SELECT DISTINCT r.roomType FROM Room r")
     List<RoomType> getAllRoomTypes();
+
+    List<Room> findByRoomType(RoomType roomType);
+
+    List<Room> findByRoomTypeAndIdNotIn(RoomType roomType, List<Long> bookedRoomIds);
 
 }

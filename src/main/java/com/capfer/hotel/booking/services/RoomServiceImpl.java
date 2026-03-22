@@ -10,12 +10,14 @@ import com.capfer.hotel.booking.repositories.RoomRepository;
 import com.capfer.hotel.booking.repositories.RoomSpecifications;
 import com.capfer.hotel.booking.utils.RoomHelper;
 import com.capfer.hotel.booking.utils.RoomValidator;
+import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
@@ -30,6 +32,7 @@ import java.util.concurrent.StructuredTaskScope.Subtask;
 @Service
 @Slf4j
 @RequiredArgsConstructor
+//@Observed(name = "room.service") // Spring Boot 4 / Micrometer 2 Observability
 public class RoomServiceImpl implements RoomService {
 
     private static final String IMAGE_UPLOAD_DIR = System.getProperty("user.dir") + "/uploads/rooms/";
@@ -41,7 +44,7 @@ public class RoomServiceImpl implements RoomService {
         try (var scope = StructuredTaskScope.open(StructuredTaskScope.Joiner.allSuccessfulOrThrow())) {
             Subtask<List<Room>> hotelRoomTask = scope.fork(() -> {
                 log.info("Executing task 1: findAll with search term '{}'", searchTerm);
-                roomRepository.findAll(RoomSpecifications.globalSearchV3(searchTerm));
+               return roomRepository.findAll(RoomSpecifications.globalSearchV3(searchTerm));
             });
 
             scope.join();
@@ -54,6 +57,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
     public ResponseDTO addRoom(RoomDTO roomDTO, MultipartFile imageFile) {
         Room roomToSave = modelMapper.map(roomDTO, Room.class);
 
@@ -82,6 +86,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
     public ResponseDTO updateRoom(RoomDTO roomDTO, MultipartFile imageFile) {
         try (var scope = StructuredTaskScope.open(StructuredTaskScope.Joiner.allSuccessfulOrThrow())) {
             Subtask<Room> updateRoomTask = scope.fork(() -> {
@@ -148,11 +153,10 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseDTO getAllRooms() {
         try (var scope = StructuredTaskScope.open(StructuredTaskScope.Joiner.allSuccessfulOrThrow())) {
-            Subtask<List<Room>> rooms = scope.fork(() -> {
-                roomRepository.findAll(Sort.by(Sort.Direction.DESC, "id"));
-            });
+            Subtask<List<Room>> rooms = scope.fork(() -> roomRepository.findAll(Sort.by(Sort.Direction.DESC, "id")));
 
             scope.join();
 
@@ -172,6 +176,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseDTO getRoomById(Long roomId) {
         Room room = roomRepository.findById(roomId).orElseThrow(() ->
                 new NotFoundException("Room not found for ID: " + roomId));
@@ -188,6 +193,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional
     public ResponseDTO deleteRoom(Long roomId) {
         if (!roomRepository.existsById(roomId)) {
             log.info("Room {} not found for deletion.", roomId);
@@ -205,6 +211,7 @@ public class RoomServiceImpl implements RoomService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseDTO getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate, RoomType roomType) {
         // Ensure check-in date is not before today
         if (checkInDate.isBefore(LocalDate.now())) {
@@ -248,10 +255,12 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     public List<RoomType> getAllRoomTypes() {
-        return roomRepository.getAllRoomTypes();
+//        return roomRepository.getAllRoomTypes();
+        return List.of(RoomType.values());
     }
 
     @Override
+    @Transactional(readOnly = true)
     public ResponseDTO searchRooms(String searchTerm) {
         List<Room> rooms = searchAll(searchTerm);
         List<RoomDTO> roomDTOS = RoomHelper.toRoomsDTOs(rooms, modelMapper);
@@ -269,7 +278,7 @@ public class RoomServiceImpl implements RoomService {
     private String saveImage(MultipartFile imageFile) throws IOException {
         // Implement logic to save the image file to the server and return the file path
         // You can use a library like Apache Commons IO or Spring's FileCopyUtils to handle file saving
-        if (imageFile.isEmpty()) {
+         if (imageFile.isEmpty()) {
             throw new IOException("No image file provided");
         }
 
@@ -280,7 +289,7 @@ public class RoomServiceImpl implements RoomService {
         // Create the upload directory if it doesn't exist
         java.io.File uploadDir = new java.io.File(IMAGE_UPLOAD_DIR);
         if (!uploadDir.exists()) {
-            uploadDir.mkdir();
+            uploadDir.mkdirs();
         }
 
         String uniqueFileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
