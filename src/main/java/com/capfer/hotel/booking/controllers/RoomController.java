@@ -7,6 +7,7 @@ import com.capfer.hotel.booking.dtos.UpdateBookingRequest;
 import com.capfer.hotel.booking.enums.RoomType;
 import com.capfer.hotel.booking.services.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -35,7 +36,7 @@ public class RoomController {
                 .build();
 
         ResponseDTO responseDTO = roomService.addRoom(roomDTO, request.imageFile());
-        return ResponseEntity.ok(responseDTO);
+        return new ResponseEntity<>(responseDTO, HttpStatus.CREATED);
     }
 
     @PutMapping(path = "/update")
