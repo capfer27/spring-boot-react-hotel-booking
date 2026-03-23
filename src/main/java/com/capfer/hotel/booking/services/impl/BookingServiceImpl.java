@@ -80,7 +80,7 @@ public class BookingServiceImpl implements BookingService {
 
         log.info("NEW BOOKING: {}", newBooking);
 
-        bookingRepository.save(newBooking);
+        Booking savedBooking = bookingRepository.save(newBooking);
 
         // Generate the payment url which will be sent via email
         final String paymentLink = BASE_URL + bookingReference + "/" + totaPriceToPay;
@@ -94,10 +94,12 @@ public class BookingServiceImpl implements BookingService {
 
         notificationService.sendEmail(notificationDTO);
 
+        BookingDTO bookingDTOResult = mapper.map(savedBooking, BookingDTO.class);
+
         return ResponseDTO.builder()
                 .statusCode(HttpStatus.CREATED.value())
-                .message("Booking occurred successfully.")
-                .booking(bookingDTO)
+                .message("Booking created successfully.")
+                .booking(bookingDTOResult)
                 .build();
     }
 
@@ -150,9 +152,8 @@ public class BookingServiceImpl implements BookingService {
     public ResponseDTO getAllBookings() {
         try(var scope = StructuredTaskScope.open(StructuredTaskScope.Joiner.awaitAllSuccessfulOrThrow())) {
 
-            StructuredTaskScope.Subtask<List<Booking>> bookings = scope.fork(() ->
-                    bookingRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
-            );
+            //bookingRepository.findAll(Sort.by(Sort.Direction.DESC, "id"))
+            StructuredTaskScope.Subtask<List<Booking>> bookings = scope.fork(bookingRepository::findAllWithDetails);
 
             scope.join();
 

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(path = "/api/bookins", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(path = "api/bookigns", produces = MediaType.APPLICATION_JSON_VALUE)
 public class BookingController {
 
     private final BookingService bookingService;

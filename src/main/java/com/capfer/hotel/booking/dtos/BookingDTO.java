@@ -1,16 +1,10 @@
 package com.capfer.hotel.booking.dtos;
 
-import com.capfer.hotel.booking.entities.Room;
-import com.capfer.hotel.booking.entities.User;
 import com.capfer.hotel.booking.enums.BookingStatus;
 import com.capfer.hotel.booking.enums.PaymentStatus;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
