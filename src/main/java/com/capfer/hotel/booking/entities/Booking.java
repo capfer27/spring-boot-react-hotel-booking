@@ -4,6 +4,7 @@ import com.capfer.hotel.booking.enums.BookingStatus;
 import com.capfer.hotel.booking.enums.PaymentStatus;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -17,6 +18,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @Setter
 @Getter
+@DynamicUpdate
 public class Booking {
 
     @Id
