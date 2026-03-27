@@ -3,9 +3,7 @@ package com.capfer.hotel.booking.entities;
 import com.capfer.hotel.booking.enums.PaymentGateway;
 import com.capfer.hotel.booking.enums.PaymentStatus;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -13,9 +11,11 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "payments")
+@Getter
+@Setter // Required for updating existing records
+@Builder(toBuilder = true) // Allows creating a builder from an existing instance
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
 public class PaymentEntity {
 
     @Id
@@ -52,16 +52,26 @@ public class PaymentEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @Column(name = "stripe_payment_intent_id", unique = true, length = 255)
+    private String stripePaymentIntentId;
+
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         PaymentEntity that = (PaymentEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(transactionId, that.transactionId) && Objects.equals(amount, that.amount) && paymentGateway == that.paymentGateway && Objects.equals(paymentDate, that.paymentDate) && paymentStatus == that.paymentStatus && Objects.equals(bookingReference, that.bookingReference) && Objects.equals(failureReason, that.failureReason) && Objects.equals(user, that.user);
+        return Objects.equals(id, that.id) && Objects.equals(transactionId, that.transactionId) &&
+                Objects.equals(amount, that.amount) && paymentGateway == that.paymentGateway
+                && Objects.equals(paymentDate, that.paymentDate) && paymentStatus == that.paymentStatus
+                && Objects.equals(bookingReference, that.bookingReference) && Objects.equals(failureReason, that.failureReason)
+                && Objects.equals(user, that.user) && Objects.equals(stripePaymentIntentId, that.stripePaymentIntentId);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, transactionId, amount, paymentGateway, paymentDate, paymentStatus, bookingReference, failureReason, user);
+        return Objects.hash(id, transactionId, amount,
+                paymentGateway, paymentDate, paymentStatus,
+                bookingReference, failureReason, user, stripePaymentIntentId
+        );
     }
 
     @Override
@@ -75,6 +85,7 @@ public class PaymentEntity {
                 ", paymentStatus=" + paymentStatus +
                 ", bookingReference='" + bookingReference + '\'' +
                 ", failureReason='" + failureReason + '\'' +
+                ", stripePaymentIntentId='" + stripePaymentIntentId + '\'' +
 //                ", user.email=" + user.getEmail() +
                 '}';
     }

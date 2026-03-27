@@ -40,4 +40,6 @@ public class PaymentDTO {
     private String failureReason;
 
     private String approvalLink; // payment gateway approval link for redirecting the user to complete payment
+
+    private String stripePaymentIntentId;
 }
