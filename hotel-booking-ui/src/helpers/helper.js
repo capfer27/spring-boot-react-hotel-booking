@@ -1,12 +1,12 @@
 // Helper to check if the current config.url matches a pattern like /rooms/delete/:id
-const isPatternMatch = (url, pattern) => {
+export const isPatternMatch = (url, pattern) => {
     // Escapes special characters and replaces :id with a regex matching any segment
     const regex = new RegExp(`^${pattern.replace(/:[^\s/]+/g, '([^/]+)')}$`);
     // Axios config.url might be relative or absolute; ensure you test accordingly
     return regex.test(url);
 };
 
-const isUrlMatch = (requestUrl, pattern) => {
+export const isUrlMatch = (requestUrl, pattern) => {
     // If the pattern contains ':id', treat it as a path segment wildcard
     // If it contains '\\?', treat it as a literal query string match
     const regexSource = pattern

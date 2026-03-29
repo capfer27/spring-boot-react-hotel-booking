@@ -5,6 +5,8 @@ import { ROOMS_ENDPOINTS } from "../constants/rooms";
 import { USERS_ENDPOINTS } from "../constants/users";
 import { OAUTH_ENDPOINTS } from "../constants/auth";
 import { PAYMENTS_ENDPOINTS } from "../constants/payments";
+import { isUrlMatch } from '../helpers/helper'
+import { BASE_URL } from "../constants/apiConfig";
 
 /**
  * TODO: Refactor this code later after making things to work first.
@@ -23,7 +25,7 @@ class ApiService {
 
     constructor(baseURL) {
         // Create a reusable Axios instance
-        api = axios.create({
+        this.#api = axios.create({
             baseURL: baseURL,
             headers: {'Content-Type': 'application/json'}
         });
@@ -97,7 +99,7 @@ class ApiService {
     }
 
     static saveToken(token) {
-        const encryptedToken = this.encryptedToken(token);
+        const encryptedToken = this.encrypt(token);
         this.saveToLocalStorage(this.TOKEN_KEY, encryptedToken);
     }
 
@@ -158,7 +160,7 @@ class ApiService {
      * AUTH AND USERS API METHODS
      */
 
-    logout() {
+    static logout() {
         this.clearAuth();
         this.clearToken();
     }
@@ -173,7 +175,7 @@ class ApiService {
         return role === 'ADMIN';
     }
 
-    static isAdmin() {
+    static isCustomer() {
         const role = this.getRole();
         return role === 'CUSTOMER';
     }
@@ -386,7 +388,9 @@ class ApiService {
 
 }
 
+export { ApiService }; // For static access
+
 // Export a single instance (Singleton pattern)
-const apiService = new ApiService('http:/localhost:9090/api');
-//apiService.setToken(ApiService.getToken())
+const apiService = new ApiService(BASE_URL);
+
 export default apiService;
