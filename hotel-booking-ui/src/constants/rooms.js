@@ -1,4 +1,4 @@
-import { HTTP_METHODS } from "./apiConfig";
+import  { HTTP_METHODS } from "./apiConfig";
 
 const ROOMS_BASE = '/rooms';
 
@@ -10,10 +10,10 @@ export const ROOMS_ENDPOINTS = {
   DELETE: (roomId) => ({url: `${BASE_URL}/delete/${roomId})}`, method: HTTP_METHODS.DELETE }),
   
  // These are used ONLY by the interceptor for pattern matching
-  DELETE_PATTERN:  `${BASE_URL}/delete/:id`,
+  DELETE_PATTERN:  `${ROOMS_BASE}/delete/:id`,
   SEARCH_PATTERN: `${ROOMS_BASE}/search/:term`,
 
-  GET_AVAILABLE: {url: `${BASE_URL}/available`, method: HTTP_METHODS.GET},
-  GET_TYPES: {url: `${BASE_URL}/types`, method: HTTP_METHODS.GET},
+  GET_AVAILABLE: {url: `${ROOMS_BASE}/available`, method: HTTP_METHODS.GET},
+  GET_TYPES: {url: `${ROOMS_BASE}/types`, method: HTTP_METHODS.GET},
   SEARCH: (searchTerm) => ({url: `${ROOMS_BASE}/search/${searchTerm}`, method: HTTP_METHODS.GET}),
 };
