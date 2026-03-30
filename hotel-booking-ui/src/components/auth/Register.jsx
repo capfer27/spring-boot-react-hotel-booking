@@ -22,7 +22,8 @@ export const RegisterPage = () => {
     const [formData, setFormData] = useState(initialFormState);
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState({type: '', text: '' });
-
+    // Initialize field errors hook
+    const [fieldError, setFieldErrors] = useState({}); 
      
     useEffect(() => {
         if (!message.text) {
@@ -32,7 +33,7 @@ export const RegisterPage = () => {
         // Use a small delay to ensure the DOM has rendered the message before scrolling
         const scrollTimer = setTimeout(() => {
             messageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }, 100);
+        }, 1000);
 
         if (message.type === 'error') {
             const timer = setTimeout(() => setMessage({ text: '', type: '' }), 5000);
@@ -40,39 +41,67 @@ export const RegisterPage = () => {
         }
 
         if (message.type === 'success') {
-            const timer = setTimeout(() => navigate(RoutePaths.LOGIN), 2000);
+            const timer = setTimeout(() => navigate(RoutePaths.LOGIN), 4000);
             return () => { clearTimeout(timer); clearTimeout(scrollTimer); };
         }
     }, [message.text, message.type, navigate]);
 
-    //  // Handle input change
-    //  const handleInputChange = ({target: { name, value}}) => {
-    //     setFormData( (prev) => ({... prev, [name]:value}));
-    //  }
+    const validate = () => {
+        let newErrors = {};
+
+        // First Name & Last Name
+        if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
+        if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+
+        // Email Regex
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!formData.email) {
+            newErrors.email = "Email is required";
+        } else if (!emailRegex.test(formData.email)) {
+            newErrors.email = "Invalid email format";
+        }
+
+        // Phone Number (e.g., 10+ digits)
+        const phoneRegex = /^\+?[1-9]\d{9,14}$/;
+        if (!formData.phoneNumber) {
+            newErrors.phoneNumber = "Phone number is required";
+        } else if (!phoneRegex.test(formData.phoneNumber)) {
+            newErrors.phoneNumber = "Invalid phone number";
+        }
+
+        // Password Length
+        if (!formData.password) {
+            newErrors.password = "Password is required";
+        } else if (formData.password.length < 8) {
+            newErrors.password = "Password must be at least 8 characters";
+        }
+
+        setFieldErrors(newErrors);
+        return Object.keys(newErrors).length === 0; // Returns true if no errors
+    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+
+        // Validate on the fly so errors disappear as clients fix them
+        validate(formData);
     };
 
-     const isFormValid = Object.values(formData).every((field) => {
-        return field?.trim();
-     });
+    //  const isFormValid = Object.values(formData).every((field) => {
+    //     return field?.trim();
+    //  });
 
      const handleSubmit = async (e) => {
         e.preventDefault();
-        if (loading) {
-            return; // PREVENT DOUBLE FORM SUBMISSION
+        
+        const isValidData = validate(formData);
+        if (!isValidData) {
+            setMessage({ type: 'error', text: "Please correct the highlighted errors." });
+            return;
         }
 
         setLoading(true);
-        setMessage({ text: '', type: '' });
-
-        if (!isFormValid) {
-           setMessage({type: 'error', text: "Please fill all required fields"})
-           setLoading(false);
-           return;
-        }
 
         try {
             const response = await apiService.registerUser(formData);
@@ -117,50 +146,91 @@ export const RegisterPage = () => {
 
                 <form className="space-y-4" onSubmit={handleSubmit}>
                     <div className="grid grid-cols-2 gap-4">
-                        <input
-                            name="firstName"
-                            type="text"
-                            required
-                            placeholder="First Name"
-                            className="appearance-none rounded-lg block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            onChange={handleInputChange}
-                        />
-                        <input
-                            name="lastName"
-                            type="text"
-                            required
-                            placeholder="Last Name"
-                            className="appearance-none rounded-lg block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                            onChange={handleInputChange}
-                        />
+                        <div className="space-y-1">
+                            <label className="text-sm font-medium text-gray-700">First Name</label>
+                            <input
+                                // required
+                                name="firstName"
+                                type="text"
+                                // placeholder="First Name"
+                                value={formData.firstName}
+                                onChange={handleInputChange}
+                                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                                    fieldError.firstName ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
+                                }`}
+                            />
+                            {/* Per-field error message */}
+                            {fieldError.firstName && <p className="text-xs text-red-500 mt-1">{fieldError.firstName}</p>}
+                        </div>
+                        <div className="space-y-1">
+                            <label className="text-sm font-medium text-gray-700">Last Name</label>
+                            <input
+                                // required
+                                name="lastName"
+                                type="text"
+                                // placeholder="Last Name"
+                                value={formData.lastName}
+                                onChange={handleInputChange}
+                                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                                    fieldError.lastName ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
+                                }`}
+                            />
+                            {/* Per-field error message */}
+                            {fieldError.lastName && <p className="text-xs text-red-500 mt-1">{fieldError.lastName}</p>}
+                        </div>
                     </div>
 
-                    <input
-                        name="email"
-                        type="email"
-                        required
-                        placeholder="Email address"
-                        className="appearance-none rounded-lg block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        onChange={handleInputChange}
-                    />
+                    <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">Email Address</label>
+                        <input
+                            // required
+                            name="email"
+                            type="email"
+                            value={formData.email}
+                            // placeholder="Email"
+                            onChange={handleInputChange}
+                            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                                fieldError.email ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
+                            }`}
+                        />
+                        {/* Per-field error message */}
+                        {fieldError.email && <p className="text-xs text-red-500 mt-1">{fieldError.email}</p>}
+                    </div>
 
-                    <input
-                        name="phoneNumber"
-                        type="tel"
-                        required
-                        placeholder="Phone Number"
-                        className="appearance-none rounded-lg block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        onChange={handleInputChange}
-                    />
 
-                    <input
-                        name="password"
-                        type="password"
-                        required
-                        placeholder="Password"
-                        className="appearance-none rounded-lg block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                        onChange={handleInputChange}
-                    />
+                    <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">Phone Number</label>
+                        <input
+                            // required
+                            name="phoneNumber"
+                            type="tel"
+                            value={formData.phoneNumber}
+                            // placeholder="Phone Number"
+                            onChange={handleInputChange}
+                            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                                fieldError.phoneNumber ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
+                            }`}
+                        />
+                        {/* Per-field error message */}
+                        {fieldError.phoneNumber && <p className="text-xs text-red-500 mt-1">{fieldError.phoneNumber}</p>}
+                    </div>
+
+                   <div className="space-y-1">
+                        <label className="text-sm font-medium text-gray-700">Password</label>
+                        <input
+                            // required
+                            name="password"
+                            type="password"
+                            value={formData.password}
+                            // placeholder="Password"
+                            onChange={handleInputChange}
+                            className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
+                                fieldError.password ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
+                            }`}
+                        />
+                        {/* Per-field error message */}
+                        {fieldError.password && <p className="text-xs text-red-500 mt-1">{fieldError.password}</p>}
+                    </div>
 
                     <button
                         type="submit"
