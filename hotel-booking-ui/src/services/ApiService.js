@@ -181,6 +181,7 @@ class ApiService {
     }
 
     async registerUser(userData) {
+        
         try {
             const response = await this.#api.post(OAUTH_ENDPOINTS.REGISTER.url, userData);
             return response.data;

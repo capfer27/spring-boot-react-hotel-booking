@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useNavigate } from "react-router-dom";
 import { apiService } from "../../services/ApiService" 
 import { HttpStatusCode } from "axios";
@@ -8,51 +8,52 @@ import { Link } from "react-router-dom";
 
 
 export const RegisterPage = () => {
-     const [formData, setFormData] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        phoneNumber: ""
-     });
-
-     const [message, setMessage] = useState({
-        type: "",
-        text: ""
-     });
-
     const navigate = useNavigate();
+    const messageRef = useRef(null); // Used for auto-scroll
+
+    const initialFormState = {
+        firstName: '',
+        lastName: '',
+        email: '',
+        password: '',
+        phoneNumber: ''
+    };
+
+    const [formData, setFormData] = useState(initialFormState);
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState({type: '', text: '' });
+
      
-    // Handles message clearing
     useEffect(() => {
         if (!message.text) {
             return;
         }
 
+        // Use a small delay to ensure the DOM has rendered the message before scrolling
+        const scrollTimer = setTimeout(() => {
+            messageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }, 100);
+
         if (message.type === 'error') {
-            const errorTimer = setTimeout(() => {
-                setMessage({ text: '', type: '' });
-            }, 5000);
-            return () => clearTimeout(errorTimer);
+            const timer = setTimeout(() => setMessage({ text: '', type: '' }), 5000);
+            return () => { clearTimeout(timer); clearTimeout(scrollTimer); };
         }
 
         if (message.type === 'success') {
-            // Clear the message after 5 seconds
-            const timer = setTimeout(() => {
-                setMessage({text: '', type: ''})
-            }, 2000);
-
-            return () => clearTimeout(timer);
+            const timer = setTimeout(() => navigate(RoutePaths.LOGIN), 2000);
+            return () => { clearTimeout(timer); clearTimeout(scrollTimer); };
         }
+    }, [message.text, message.type, navigate]);
 
-    }, [message.text, message.type, navigate]); // Only reruns if these data change.
+    //  // Handle input change
+    //  const handleInputChange = ({target: { name, value}}) => {
+    //     setFormData( (prev) => ({... prev, [name]:value}));
+    //  }
 
-     const [loading, setLoading] = useState(false);
-
-     // Handle input change
-     const handleInputChange = ({target: { name, value}}) => {
-        setFormData( (prev) => ({... prev, [name]:value}));
-     }
+    const handleInputChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
 
      const isFormValid = Object.values(formData).every((field) => {
         return field?.trim();
@@ -60,45 +61,61 @@ export const RegisterPage = () => {
 
      const handleSubmit = async (e) => {
         e.preventDefault();
+        if (loading) {
+            return; // PREVENT DOUBLE FORM SUBMISSION
+        }
+
         setLoading(true);
+        setMessage({ text: '', type: '' });
 
         if (!isFormValid) {
-           setMessage({type: "error", text: "Please fill all required fields"})
+           setMessage({type: 'error', text: "Please fill all required fields"})
+           setLoading(false);
            return;
         }
 
         try {
             const response = await apiService.registerUser(formData);
-            if (response.statusCode === HttpStatusCode.Created) {
-                setMessage({type: "success", text: "You have successfully registered."});
+            // Safer check: Accept both 200 and 201
+            if (response.statusCode === HttpStatusCode.Created || response.statusCode === HttpStatusCode.Ok) {
+                setFormData(initialFormState); // Reset form immediately on success
+                setMessage({ type: "success", text: "You have successfully registered." });
+            } else {
+                // Handle cases where the API returns a 200-level code but something is wrong
+                setMessage({ type: "error", text: response.message || "Unexpected response from server" });
             }
         } catch (error) {
-            setMessage({type: "error", text: error?.response?.data?.message || error.message})
-        } finally {
-            setLoading(false);
+            console.error("Registration Error:", error); // Helpful for debugging
+            setMessage({ 
+                type: "error", 
+                text: error?.response?.data?.message || error.message || "Connection to server failed" 
+            });
         }
      };
 
          return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg border border-gray-100">
+        <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4">
+            <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg">
                 <div>
                     <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">Create your account</h2>
                     <p className="mt-2 text-center text-sm text-gray-600">Join Carl Hotel today</p>
                 </div>
 
-                {message.text && (
-                    <div className={`p-3 rounded-md text-sm text-center border ${
-                        message.type === 'success' 
-                         ? "bg-green-50 text-green-700 border-green-200" 
-                         : "bg-red-50 text-red-700 border-red-200"
+                 {/* MESSAGE BOX WITH REF FOR SCROLLING */}
+                <div ref={messageRef}>
+                    {message.text && (
+                        <div className={`p-3 rounded-md text-sm text-center border animate-in fade-in duration-300 ${
+                            message.type === 'success' 
+                                ? "bg-green-50 text-green-700 border-green-200" 
+                                : "bg-red-50 text-red-700 border-red-200"
                         }`}>
-                        {message.text}
-                    </div>
-                )}
+                            {message.text}
+                        </div>
+                    )}
+                </div>
     
 
-                <form className="mt-8 space-y-4" onSubmit={handleSubmit}>
+                <form className="space-y-4" onSubmit={handleSubmit}>
                     <div className="grid grid-cols-2 gap-4">
                         <input
                             name="firstName"
@@ -148,9 +165,18 @@ export const RegisterPage = () => {
                     <button
                         type="submit"
                         disabled={loading}
-                        className="w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-blue-300 transition-colors"
+                        className="w-full flex items-center justify-center py-3 px-4 rounded-lg text-white bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 transition-all font-semibold"
                     >
-                        {loading ? "Registering..." : "Register"}
+                        {loading ? (
+                            <>
+                                {/* LOADING SPINNER */}
+                                <svg className="animate-spin h-5 w-5 mr-3 text-white" viewBox="0 0 24 24">
+                                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                                </svg>
+                                Creating Account...
+                            </>
+                        ) : "Register"}
                     </button>
                 </form>
 
