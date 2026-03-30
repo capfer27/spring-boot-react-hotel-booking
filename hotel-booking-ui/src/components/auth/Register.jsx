@@ -46,6 +46,14 @@ export const RegisterPage = () => {
         }
     }, [message.text, message.type, navigate]);
 
+    useEffect(() => {
+    // Only start validating once the user has at least started typing 
+    // or if an error already exists (to avoid showing errors on a fresh page)
+    if (Object.values(formData).some(val => val !== '') || Object.keys(fieldError).length > 0) {
+        validate(formData);
+    }
+}, [formData]); // <--- Watch the data changes directly
+
     const validate = () => {
         let newErrors = {};
 
@@ -85,7 +93,7 @@ export const RegisterPage = () => {
         setFormData({ ...formData, [name]: value });
 
         // Validate on the fly so errors disappear as clients fix them
-        validate(formData);
+        //validate(formData);
     };
 
     //  const isFormValid = Object.values(formData).every((field) => {
@@ -155,6 +163,7 @@ export const RegisterPage = () => {
                                 // placeholder="First Name"
                                 value={formData.firstName}
                                 onChange={handleInputChange}
+                                onInput={handleInputChange} // Adds extra layer for autocomplete/paste
                                 className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                                     fieldError.firstName ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
                                 }`}
@@ -171,6 +180,7 @@ export const RegisterPage = () => {
                                 // placeholder="Last Name"
                                 value={formData.lastName}
                                 onChange={handleInputChange}
+                                onInput={handleInputChange} // Adds extra layer for autocomplete/paste
                                 className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                                     fieldError.lastName ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
                                 }`}
@@ -189,6 +199,7 @@ export const RegisterPage = () => {
                             value={formData.email}
                             // placeholder="Email"
                             onChange={handleInputChange}
+                            onInput={handleInputChange} // Adds extra layer for autocomplete/paste
                             className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                                 fieldError.email ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
                             }`}
@@ -207,6 +218,7 @@ export const RegisterPage = () => {
                             value={formData.phoneNumber}
                             // placeholder="Phone Number"
                             onChange={handleInputChange}
+                            onInput={handleInputChange} // Adds extra layer for autocomplete/paste
                             className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                                 fieldError.phoneNumber ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
                             }`}
@@ -224,6 +236,7 @@ export const RegisterPage = () => {
                             value={formData.password}
                             // placeholder="Password"
                             onChange={handleInputChange}
+                            onInput={handleInputChange} // Adds extra layer for autocomplete/paste
                             className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                                 fieldError.password ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
                             }`}
