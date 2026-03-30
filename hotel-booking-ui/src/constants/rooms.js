@@ -1,6 +1,6 @@
 import  { HTTP_METHODS } from "./apiConfig";
 
-const ROOMS_BASE = '/rooms';
+const ROOMS_BASE = 'api/rooms';
 
 export const ROOMS_ENDPOINTS = {
   GET_ALL: { url: `${ROOMS_BASE}/all`, method: HTTP_METHODS.GET },

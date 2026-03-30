@@ -1,6 +1,6 @@
 import { HTTP_METHODS } from "./apiConfig";
 
-const USERS_BASE = '/users';
+const USERS_BASE = 'api/users';
 const USERS_ALL = `${USERS_BASE}/all`;
 const USERS_ACCOUNT = `${USERS_BASE}/account`;
 const USERS_UPDATE = `${USERS_BASE}/update`;

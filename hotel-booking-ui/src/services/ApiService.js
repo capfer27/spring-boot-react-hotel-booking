@@ -76,7 +76,7 @@ class ApiService {
                 config.headers['Accept-Language'] = language;
                 
                 // Add custom dynamic timestamps headers
-                config.headers['X-Request-Timestamp'] = Date.now();
+                //config.headers['X-Request-Timestamp'] = Date.now();
 
                 // Here we can set the X-Request-Idempotent-ID
                 //config.headers['X-Request-Idempotent-ID'] = crypto.randomUUID;
@@ -391,6 +391,6 @@ class ApiService {
 export { ApiService }; // For static access
 
 // Export a single instance (Singleton pattern)
-const apiService = new ApiService(BASE_URL);
+export const apiService = new ApiService(BASE_URL);
 
-export default apiService;
+// export default apiService;

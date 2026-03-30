@@ -1,6 +1,7 @@
 package com.capfer.hotel.booking.dtos;
 
 import com.capfer.hotel.booking.enums.UserRole;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,5 +48,7 @@ public class ResponseDTO {
     private NotificationDTO notification;
     private List<NotificationDTO> notifications;
 
+//    @Builder.Default
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private final LocalDateTime timestamp = LocalDateTime.now();
 }

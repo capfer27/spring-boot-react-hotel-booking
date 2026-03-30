@@ -37,6 +37,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-webmvc'
 	implementation 'org.flywaydb:flyway-database-postgresql'
 
+	implementation 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310'
+
 	// Allows to convert Entities to DTOs back and forth
 	implementation 'org.modelmapper:modelmapper:3.2.6'
 

@@ -6,6 +6,8 @@ import TWFooter from './components/common/tailwind/TWFooter'
 import { ApiService } from './services/ApiService'
 import { useNavigate, Navigate } from 'react-router-dom'
 import { Route } from 'react-router-dom'
+import { RoutePaths } from './constants/RoutePaths'
+import { RegisterPage } from './components/auth/Register';
 
 const App = () => {
 
@@ -19,7 +21,7 @@ const App = () => {
         const isLogout = window.confirm("Are you sure you want to logout?");
         if (isLogout) {
             ApiService.logout();
-            navigate("/home");
+            navigate(RoutePaths.HOME);
         }
     }
 
@@ -37,7 +39,8 @@ const App = () => {
          {/* Main Content Area */}
       <main className="grow">
         <Routes>
-          <Route path="/home" element={<Navigate to="/home" />} />
+          <Route path={RoutePaths.REGISTER} element={<RegisterPage />} />
+          {/* <Route path={RoutePaths.REGISTER} element={<Navigate to={RegisterPage} />} /> */}
           {/* <Route path="/home" element={<Home />} /> */}
           {/* Add your other routes here */}
         </Routes>

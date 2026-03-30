@@ -19,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 @Configuration
 @EnableMethodSecurity
@@ -41,7 +42,7 @@ public class SecurityFilter {
                 })
                 .authorizeHttpRequests(authReq -> authReq
                         .requestMatchers(
-                                "/api/auth/**",
+                                "/auth/**",
                                 "/api/rooms/**",
                                 "/api/bookinsg/**"
                         ).permitAll() // Allow unauthenticated access to these endpoints
@@ -66,4 +67,5 @@ public class SecurityFilter {
     ) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
+
 }

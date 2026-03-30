@@ -1,6 +1,6 @@
 import { HTTP_METHODS } from "./apiConfig";
 
-const BOOKINGS_BASE = '/bookings';
+const BOOKINGS_BASE = 'api/bookings';
 const BOOKINGS_ALL = `${BOOKINGS_BASE}/all`
 const BOOKINGS_CREATE = `/${BOOKINGS_BASE}/create`;
 const BOOKINGS_REFERENCE = `${BOOKINGS_BASE}`

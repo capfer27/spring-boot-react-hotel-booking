@@ -1,4 +1,5 @@
 import { NavLink } from "react-router-dom";
+import { RoutePaths } from "../../../constants/RoutePaths";
 
 const TWNavbar = ({ isAuthenticated, isAdmin, isCustomer, handleLogout }) => {
     // Utility for active link styling
@@ -14,7 +15,7 @@ const TWNavbar = ({ isAuthenticated, isAdmin, isCustomer, handleLogout }) => {
                     
                     {/* Brand/Logo */}
                     <div className="shrink-0">
-                        <NavLink to="/home" className="text-white font-bold text-xl tracking-tight">
+                        <NavLink to={RoutePaths.HOME} className="text-white font-bold text-xl tracking-tight">
                             Carl <span className="text-blue-500">Hotel</span>
                         </NavLink>
                     </div>
@@ -22,25 +23,25 @@ const TWNavbar = ({ isAuthenticated, isAdmin, isCustomer, handleLogout }) => {
                     {/* Navigation Links */}
                     <div className="hidden md:block">
                         <ul className="flex items-center space-x-4">
-                            <li><NavLink to="/home" className={navLinkClass}>Home</NavLink></li>
-                            <li><NavLink to="/rooms" className={navLinkClass}>Rooms</NavLink></li>
-                            <li><NavLink to="/find-bookings" className={navLinkClass}>My Bookings</NavLink></li>
+                            <li><NavLink to={RoutePaths.HOME} className={navLinkClass}>Home</NavLink></li>
+                            <li><NavLink to={RoutePaths.ROOMS} className={navLinkClass}>Rooms</NavLink></li>
+                            <li><NavLink to={RoutePaths.FIND_BOOKING} className={navLinkClass}>My Bookings</NavLink></li>
                             
                             {isCustomer && (
-                                <li><NavLink to="/profile" className={navLinkClass}>Profile</NavLink></li>
+                                <li><NavLink to={RoutePaths.PROFILE} className={navLinkClass}>Profile</NavLink></li>
                             )}
                             
                             {isAdmin && (
-                                <li><NavLink to="/admin" className={navLinkClass}>Admin</NavLink></li>
+                                <li><NavLink to={RoutePaths.ADMIN} className={navLinkClass}>Admin</NavLink></li>
                             )}
 
                             {/* Auth Group */}
                             <div className="flex items-center space-x-2 ml-4 border-l border-gray-700 pl-4">
                                 {!isAuthenticated ? (
                                     <>
-                                        <li><NavLink to="/login" className={navLinkClass}>Login</NavLink></li>
+                                        <li><NavLink to={RoutePaths.LOGIN} className={navLinkClass}>Login</NavLink></li>
                                         <li>
-                                            <NavLink to="/register" className="ml-2 px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-500 transition-colors">
+                                            <NavLink to={RoutePaths.REGISTER} className="ml-2 px-4 py-2 rounded-md text-sm font-medium bg-blue-600 text-white hover:bg-blue-500 transition-colors">
                                                 Register
                                             </NavLink>
                                         </li>
