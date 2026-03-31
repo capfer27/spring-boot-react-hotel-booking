@@ -6,7 +6,7 @@ import { USERS_ENDPOINTS } from "../constants/users";
 import { OAUTH_ENDPOINTS } from "../constants/auth";
 import { PAYMENTS_ENDPOINTS } from "../constants/payments";
 import { isUrlMatch } from '../helpers/helper'
-import { BASE_URL } from "../constants/apiConfig";
+import { BASE_HEADERS, BASE_URL, FORM_HEADERS } from "../constants/apiConfig";
 
 /**
  * TODO: Refactor this code later after making things to work first.
@@ -27,7 +27,7 @@ class ApiService {
         // Create a reusable Axios instance
         this.#api = axios.create({
             baseURL: baseURL,
-            headers: {'Content-Type': 'application/json'}
+            headers: BASE_HEADERS
         });
 
         // Interceptor to inject the token into every request
@@ -127,6 +127,7 @@ class ApiService {
     static clearAuth() {
         localStorage.removeItem(this.TOKEN_KEY);
         localStorage.removeItem(this.ROLE_KEY);
+        ApiService.clearToken()
     }
 
     static getHeader() {
@@ -160,9 +161,14 @@ class ApiService {
      * AUTH AND USERS API METHODS
      */
 
-    static logout() {
+    logout() {
         this.clearAuth();
-        this.clearToken();
+        // Re-assign the private field to a fresh instance
+        // This "nukes" all headers, base URLs, and all configurations, so we have a completely fresh start.
+        this.#api = axios.create({
+            baseURL: BASE_URL,
+            headers: BASE_HEADERS
+        });
     }
 
     static isAuthenticated() {
@@ -187,6 +193,7 @@ class ApiService {
             return response.data;
         } catch (error) {
             // Extract the server's error message
+            // throw new Error(error);
             this.#handleError("Registration failed", error);
         }
     }
@@ -235,9 +242,7 @@ class ApiService {
         try {
             const response = this.#api.post(ROOMS_ENDPOINTS.CREATE.url, formData, {
                 headers: {
-                    //...this.getHeader(),
-                    // Overrides for this call only
-                    'Content-Type': 'multipart/form-data'
+                    FORM_HEADERS
                 }
             });
             return response.data
@@ -383,8 +388,11 @@ class ApiService {
 
 
     #handleError(message, error) {
-        const result = `${message}: ${error?.data?.message}`;
-        throw new Error(result);
+        const result = {
+            message: `${message}: ${error?.data?.message || "Unknown Error"}`,
+            statusCode: error?.status
+        };
+        throw new Error(result.message, { cause: result });
     }
 
 }

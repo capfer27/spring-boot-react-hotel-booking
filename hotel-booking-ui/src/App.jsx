@@ -1,13 +1,12 @@
 import { Routes } from 'react-router-dom'
-import Navbar from './components/common/Navbar'
-import Footer from './components/common/Footer'
 import TWNavbar from './components/common/tailwind/TWNavbar'
 import TWFooter from './components/common/tailwind/TWFooter'
-import { ApiService } from './services/ApiService'
-import { useNavigate, Navigate } from 'react-router-dom'
+import { apiService, ApiService } from './services/ApiService'
+import { useNavigate } from 'react-router-dom'
 import { Route } from 'react-router-dom'
 import { RoutePaths } from './constants/RoutePaths'
 import { RegisterPage } from './components/auth/Register';
+import { LoginPage } from './components/auth/LoginPage'
 
 const App = () => {
 
@@ -20,7 +19,7 @@ const App = () => {
     const handleLogout = () => {
         const isLogout = window.confirm("Are you sure you want to logout?");
         if (isLogout) {
-            ApiService.logout();
+            apiService.logout();
             navigate(RoutePaths.HOME);
         }
     }
@@ -40,7 +39,7 @@ const App = () => {
       <main className="grow">
         <Routes>
           <Route path={RoutePaths.REGISTER} element={<RegisterPage />} />
-          {/* <Route path={RoutePaths.REGISTER} element={<Navigate to={RegisterPage} />} /> */}
+          <Route path={RoutePaths.LOGIN} element={<LoginPage />} />
           {/* <Route path="/home" element={<Home />} /> */}
           {/* Add your other routes here */}
         </Routes>

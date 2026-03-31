@@ -4,7 +4,6 @@ import { apiService } from "../../services/ApiService"
 import { HttpStatusCode } from "axios";
 import { RoutePaths } from "../../constants/RoutePaths";
 import { Link } from "react-router-dom";
-// import '../../index-backup.css';
 
 
 export const RegisterPage = () => {
@@ -122,11 +121,19 @@ export const RegisterPage = () => {
                 setMessage({ type: "error", text: response.message || "Unexpected response from server" });
             }
         } catch (error) {
-            console.error("Registration Error:", error); // Helpful for debugging
-            setMessage({ 
-                type: "error", 
-                text: error?.response?.data?.message || error.message || "Connection to server failed" 
-            });
+            if (error?.cause?.statusCode === HttpStatusCode.Conflict) {
+                setMessage({ 
+                    type: "error", 
+                    text: "Invalid email, please try again."
+                });
+            } else {
+                setMessage({ 
+                    type: "error", 
+                    text: error?.response?.data?.message || error.message || "Connection to server failed" 
+                });
+            }
+        } finally {
+            setLoading(false);
         }
      };
 
@@ -163,7 +170,7 @@ export const RegisterPage = () => {
                                 // placeholder="First Name"
                                 value={formData.firstName}
                                 onChange={handleInputChange}
-                                onInput={handleInputChange} // Adds extra layer for autocomplete/paste
+                                //onInput={handleInputChange} // Adds extra layer for autocomplete/paste
                                 className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                                     fieldError.firstName ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
                                 }`}
@@ -180,7 +187,7 @@ export const RegisterPage = () => {
                                 // placeholder="Last Name"
                                 value={formData.lastName}
                                 onChange={handleInputChange}
-                                onInput={handleInputChange} // Adds extra layer for autocomplete/paste
+                                //onInput={handleInputChange} // Adds extra layer for autocomplete/paste
                                 className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                                     fieldError.lastName ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
                                 }`}
@@ -199,7 +206,7 @@ export const RegisterPage = () => {
                             value={formData.email}
                             // placeholder="Email"
                             onChange={handleInputChange}
-                            onInput={handleInputChange} // Adds extra layer for autocomplete/paste
+                            //onInput={handleInputChange} // Adds extra layer for autocomplete/paste
                             className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                                 fieldError.email ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
                             }`}
@@ -218,7 +225,7 @@ export const RegisterPage = () => {
                             value={formData.phoneNumber}
                             // placeholder="Phone Number"
                             onChange={handleInputChange}
-                            onInput={handleInputChange} // Adds extra layer for autocomplete/paste
+                            //onInput={handleInputChange} // Adds extra layer for autocomplete/paste
                             className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                                 fieldError.phoneNumber ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
                             }`}
@@ -236,7 +243,7 @@ export const RegisterPage = () => {
                             value={formData.password}
                             // placeholder="Password"
                             onChange={handleInputChange}
-                            onInput={handleInputChange} // Adds extra layer for autocomplete/paste
+                            //onInput={handleInputChange} // Adds extra layer for autocomplete/paste
                             className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 ${
                                 fieldError.password ? "border-red-500 focus:ring-red-200" : "border-gray-300 focus:ring-blue-500"
                             }`}
