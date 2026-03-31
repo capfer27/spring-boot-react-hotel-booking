@@ -1,6 +1,7 @@
 package com.capfer.hotel.booking.dtos;
 
 import com.capfer.hotel.booking.enums.UserRole;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -19,6 +20,7 @@ public class RegistrationRequest {
     private String lastName;
 
     @NotBlank(message = "Email is required")
+    @Email(message = "Invalid email format")
     private String email;
 
     @NotBlank(message = "Phone number is required")

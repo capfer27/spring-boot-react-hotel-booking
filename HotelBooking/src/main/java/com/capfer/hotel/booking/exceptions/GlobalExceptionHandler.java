@@ -1,6 +1,7 @@
 package com.capfer.hotel.booking.exceptions;
 
 import com.capfer.hotel.booking.dtos.ResponseDTO;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
@@ -66,4 +67,8 @@ public class GlobalExceptionHandler {
         return ProblemDetail.forStatusAndDetail(HttpStatus.FORBIDDEN, customEx.getMessage());
     }
 
+    @ExceptionHandler(EmailAlreadyExistsException.class)
+    public ResponseEntity<String> handleConflict(EmailAlreadyExistsException e) {
+        return new ResponseEntity<>("Duplicate entry detected", HttpStatus.CONFLICT);
+    }
 }

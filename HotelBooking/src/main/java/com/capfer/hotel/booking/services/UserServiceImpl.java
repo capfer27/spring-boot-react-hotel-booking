@@ -4,6 +4,7 @@ import com.capfer.hotel.booking.dtos.*;
 import com.capfer.hotel.booking.entities.Booking;
 import com.capfer.hotel.booking.entities.User;
 import com.capfer.hotel.booking.enums.UserRole;
+import com.capfer.hotel.booking.exceptions.EmailAlreadyExistsException;
 import com.capfer.hotel.booking.exceptions.InvalidCredentialException;
 import com.capfer.hotel.booking.exceptions.NotFoundException;
 import com.capfer.hotel.booking.repositories.BookingRepository;
@@ -40,29 +41,44 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public ResponseDTO registerUser(RegistrationRequest registrationRequest) {
-        UserRole userRole = UserRole.CUSTOMER;
-        if (registrationRequest.getRole() != null) {
-            userRole = registrationRequest.getRole();
+
+        if (userRepository.findByEmail(registrationRequest.getEmail()).isPresent()) {
+            log.info("Email is already in use");
+            throw new EmailAlreadyExistsException("Email is already in use");
         }
 
-        User user = User.builder()
-                .firstName(registrationRequest.getFirstName())
-                .lastName(registrationRequest.getLastName())
-                .email(registrationRequest.getEmail())
-                .password(passwordEncoder.encode(registrationRequest.getPassword()))
-                .phoneNumber(registrationRequest.getPhoneNumber())
-                .role(userRole)
-                .isActive(true)
-                .build();
+        try {
+            UserRole userRole = UserRole.CUSTOMER;
+            if (registrationRequest.getRole() != null) {
+                userRole = registrationRequest.getRole();
+            }
 
-        userRepository.save(user);
+            User user = User.builder()
+                    .firstName(registrationRequest.getFirstName())
+                    .lastName(registrationRequest.getLastName())
+                    .email(registrationRequest.getEmail())
+                    .password(passwordEncoder.encode(registrationRequest.getPassword()))
+                    .phoneNumber(registrationRequest.getPhoneNumber())
+                    .role(userRole)
+                    .isActive(true)
+                    .build();
 
-        log.info("User name {}, whose email {} was registered successfully.", user.getFirstName(), user.getEmail());
+            userRepository.save(user);
 
-        return ResponseDTO.builder()
-                .message("User registered successfully")
-                .statusCode(HttpStatus.CREATED.value())
-                .build();
+            log.info("User name {}, whose email {} was registered successfully.", user.getFirstName(), user.getEmail());
+
+            return ResponseDTO.builder()
+                    .message("User registered successfully")
+                    .statusCode(HttpStatus.CREATED.value())
+                    .build();
+
+        } catch (Exception e) {
+            log.info("User registration failed: {}", e.getMessage());
+            return ResponseDTO.builder()
+                    .message("Registration failed")
+                    .statusCode(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                    .build();
+        }
     }
 
     @Override
