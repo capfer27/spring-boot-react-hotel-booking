@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: HotelBooking
+  config:
+    import: "optional:file:.env[.properties]" # Load environment variables from .env file if it exists
 
   threads:
     virtual:
@@ -102,7 +104,7 @@ jwt:
 # Stripe Test Credentials
 stripe:
   api:
-    public-key: pk_test_51TEPPG4PrGPfvzHPteFaMmLdLdcXH8vm8F7EUezOcQKGGwKyfvtGleY4abVHxaXyPUNa6cqD2vMqnp7yyOlleFdh00EopfmZiO
-    secret-key: sk_test_51TEPPG4PrGPfvzHPRdXzsySQIzkIGVcp0Cvl66tsY5vTYF65Vjju8PQQ9wNj1Nz5C7wOmzLigAf7PTVdjFDjMf9m00uGhAeByK
+    public-key: ${STRIPE_PUBLIC_KEY}
+    secret-key: ${STRIPE_SECRET_KEY}
 
 
