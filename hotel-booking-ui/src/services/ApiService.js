@@ -124,10 +124,10 @@ class ApiService {
        return this.decrypt(encryptedRole);
     }
 
-    static clearAuth() {
-        localStorage.removeItem(this.TOKEN_KEY);
-        localStorage.removeItem(this.ROLE_KEY);
-        ApiService.clearToken()
+    clearAuth() {
+        localStorage.removeItem("HOTEL_BOKING_TOKEN");
+        localStorage.removeItem("HOTEL_BOKING_ROLE");
+        this.clearToken()
     }
 
     static getHeader() {

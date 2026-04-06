@@ -4,6 +4,8 @@ import { apiService } from "../../services/ApiService"
 import { HttpStatusCode } from "axios";
 import { RoutePaths } from "../../constants/RoutePaths";
 import { Link } from "react-router-dom";
+import { validateRegisterV1 } from "../../utils/validationHelper";
+import { MessageType } from "../../constants/MessageType";
 
 
 export const RegisterPage = () => {
@@ -34,13 +36,13 @@ export const RegisterPage = () => {
             messageRef.current?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         }, 1000);
 
-        if (message.type === 'error') {
+        if (message.type === MessageType.ERROR) {
             const timer = setTimeout(() => setMessage({ text: '', type: '' }), 5000);
             return () => { clearTimeout(timer); clearTimeout(scrollTimer); };
         }
 
-        if (message.type === 'success') {
-            const timer = setTimeout(() => navigate(RoutePaths.LOGIN), 4000);
+        if (message.type === MessageType.SUCCESS) {
+            const timer = setTimeout(() => navigate(RoutePaths.LOGIN), 2000);
             return () => { clearTimeout(timer); clearTimeout(scrollTimer); };
         }
     }, [message.text, message.type, navigate]);
@@ -49,43 +51,12 @@ export const RegisterPage = () => {
     // Only start validating once the user has at least started typing 
     // or if an error already exists (to avoid showing errors on a fresh page)
     if (Object.values(formData).some(val => val !== '') || Object.keys(fieldError).length > 0) {
-        validate(formData);
+        //validate(formData);
+        const {isValid, newErrors } = validateRegisterV1(formData);
+        setFieldErrors(newErrors);
+        isValid
     }
 }, [formData]); // <--- Watch the data changes directly
-
-    const validate = () => {
-        let newErrors = {};
-
-        // First Name & Last Name
-        if (!formData.firstName.trim()) newErrors.firstName = "First name is required";
-        if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
-
-        // Email Regex
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!formData.email) {
-            newErrors.email = "Email is required";
-        } else if (!emailRegex.test(formData.email)) {
-            newErrors.email = "Invalid email format";
-        }
-
-        // Phone Number (e.g., 10+ digits)
-        const phoneRegex = /^\+?[1-9]\d{9,14}$/;
-        if (!formData.phoneNumber) {
-            newErrors.phoneNumber = "Phone number is required";
-        } else if (!phoneRegex.test(formData.phoneNumber)) {
-            newErrors.phoneNumber = "Invalid phone number";
-        }
-
-        // Password Length
-        if (!formData.password) {
-            newErrors.password = "Password is required";
-        } else if (formData.password.length < 8) {
-            newErrors.password = "Password must be at least 8 characters";
-        }
-
-        setFieldErrors(newErrors);
-        return Object.keys(newErrors).length === 0; // Returns true if no errors
-    };
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -101,10 +72,13 @@ export const RegisterPage = () => {
 
      const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const form = new FormData(this);
+        console.log("Form: " + form);
         
-        const isValidData = validate(formData);
-        if (!isValidData) {
-            setMessage({ type: 'error', text: "Please correct the highlighted errors." });
+        const { isValid } = validateRegisterV1(formData);
+        if (!isValid) {
+            setMessage({ type: MessageType.ERROR, text: "Please correct the highlighted errors." });
             return;
         }
 
@@ -118,17 +92,17 @@ export const RegisterPage = () => {
                 setMessage({ type: "success", text: "You have successfully registered." });
             } else {
                 // Handle cases where the API returns a 200-level code but something is wrong
-                setMessage({ type: "error", text: response.message || "Unexpected response from server" });
+                setMessage({ type: MessageType.ERROR, text: response.message || "Unexpected response from server" });
             }
         } catch (error) {
             if (error?.cause?.statusCode === HttpStatusCode.Conflict) {
                 setMessage({ 
-                    type: "error", 
+                    type: MessageType.ERROR, 
                     text: "Invalid email, please try again."
                 });
             } else {
                 setMessage({ 
-                    type: "error", 
+                    type: MessageType.ERROR, 
                     text: error?.response?.data?.message || error.message || "Connection to server failed" 
                 });
             }
@@ -150,7 +124,7 @@ export const RegisterPage = () => {
                     {message.text && (
                         <div className={`p-3 rounded-md text-sm text-center border animate-in fade-in duration-300 ${
                             message.type === 'success' 
-                                ? "bg-green-50 text-green-700 border-green-200" 
+                                ? "bg-green-50 text-green-700 border-green-300" 
                                 : "bg-red-50 text-red-700 border-red-200"
                         }`}>
                             {message.text}
