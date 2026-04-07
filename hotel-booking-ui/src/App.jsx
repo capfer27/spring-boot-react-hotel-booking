@@ -7,6 +7,8 @@ import { Route } from 'react-router-dom'
 import { RoutePaths } from './constants/RoutePaths'
 import { RegisterPage } from './components/auth/Register';
 import { LoginPage } from './components/auth/LoginPage'
+import RoomSearch from './components/common/RoomSearch'
+import HomePage from './components/home/HomePage'
 
 const App = () => {
 
@@ -40,7 +42,8 @@ const App = () => {
         <Routes>
           <Route path={RoutePaths.REGISTER} element={<RegisterPage />} />
           <Route path={RoutePaths.LOGIN} element={<LoginPage />} />
-          {/* <Route path="/home" element={<Home />} /> */}
+          <Route path={RoutePaths.ROOMS} element={<RoomSearch />} />
+          <Route path={RoutePaths.HOME} element={<HomePage />} />
           {/* Add your other routes here */}
         </Routes>
       </main>

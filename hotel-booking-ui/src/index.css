@@ -1,2 +1,24 @@
 /* Must be at the top */
-@import "tailwindcss"
+@import 'tailwindcss';
+
+/* Custom Blue Theme for React DayPicker */
+.rdp {
+  --rdp-accent-color: #2563eb; /* Your brand blue (Tailwind blue-600) */
+  --rdp-background-color: #eff6ff; /* Light blue hover (Tailwind blue-50) */
+  --rdp-outline: 2px solid #2563eb; /* Focus outline color */
+  margin: 0;
+}
+
+/* Optional: Make the calendar feel more modern */
+.rdp-day_selected,
+.rdp-day_selected:focus-visible,
+.rdp-day_selected:hover {
+  background-color: var(--rdp-accent-color);
+  color: white;
+  border-radius: 8px; /* Rounded corners for a premium feel */
+}
+
+.rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+  background-color: var(--rdp-background-color);
+  color: #1e40af; /* Darker blue text on hover */
+}
