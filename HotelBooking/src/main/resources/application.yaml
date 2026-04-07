@@ -99,12 +99,12 @@ jwt:
     secret-key: ertYuiopASDFGHJKLzxcvbnmQWERTYUIOP123456
     expiration: 3600000 # 1 hour in milliseconds
     # 24 hours in milliseconds
-    refresh-token-expiration: 86400000 // 7 days in milliseconds
+    refresh-token-expiration: 86400000 # 7 days in milliseconds
 
 # Stripe Test Credentials
 stripe:
   api:
-    public-key: ${STRIPE_PUBLIC_KEY}
-    secret-key: ${STRIPE_SECRET_KEY}
+    public-key: "${STRIPE_PUBLIC_KEY}"
+    secret-key: "${STRIPE_SECRET_KEY}"
 
 

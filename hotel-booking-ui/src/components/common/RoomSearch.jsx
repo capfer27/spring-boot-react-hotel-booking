@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { apiService } from '../../services/ApiService';
-import HotelDatePicker from './HotelDatePicker';
 
 const RoomSearch = ({ onSearch }) => {
   const [searchQuery, setSearchQuery] = useState({
@@ -32,6 +31,7 @@ const RoomSearch = ({ onSearch }) => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setSearchQuery({ ...searchQuery, [name]: value });
+    console.log(name, value, searchQuery);
     if (error) {
       setError(''); // Clear error when user types.
     }

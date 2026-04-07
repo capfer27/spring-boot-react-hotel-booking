@@ -3,6 +3,7 @@ import { apiService } from '../../services/ApiService';
 import { HttpStatusCode } from 'axios';
 import { isEmptyResponse } from '../../utils/apiUtils';
 import { DayPicker } from 'react-day-picker';
+// import '../../index-backup.css';
 
 export const RoomSearchV3 = ({ handleSearchResult }) => {
   const [startDate, setStartDate] = useState(null);
@@ -149,14 +150,12 @@ export const RoomSearchV3 = ({ handleSearchResult }) => {
               setRoomType(e.target.value);
             }}
           >
-            <option disabled value="" key="">
-              Select Room Type
-            </option>
-            {roomTypes.map((roomType) => {
-              <option value={roomType} key={roomType}>
-                {roomType}
-              </option>;
-            })}
+            <option value="">Select Room Type</option>
+            {roomTypes.map((type, idIndex) => (
+              <option key={idIndex} value={type}>
+                {type}
+              </option>
+            ))}
           </select>
         </div>
 
