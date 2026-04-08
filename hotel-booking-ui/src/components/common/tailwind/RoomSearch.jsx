@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { apiService } from '../../services/ApiService';
+import { apiService } from '../../../services/ApiService';
 
 const RoomSearch = ({ onSearch }) => {
   const [searchQuery, setSearchQuery] = useState({

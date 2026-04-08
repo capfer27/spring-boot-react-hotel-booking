@@ -323,7 +323,13 @@ class ApiService {
    *
    *    const rooms = await ApiService.getAvailableRooms(searchCriteria);
    */
-  async getAvailableRooms(checkInDate, checkOutDate, roomType, page, size) {
+  async getAvailableRooms(
+    checkInDate,
+    checkOutDate,
+    roomType,
+    page = 0,
+    size = 20
+  ) {
     try {
       const response = await this.#api.get(ROOMS_ENDPOINTS.GET_AVAILABLE.url, {
         params: {

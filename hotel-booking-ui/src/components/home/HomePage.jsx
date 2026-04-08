@@ -1,9 +1,12 @@
 import { useState } from 'react';
 import { apiService } from '../../services/ApiService';
-import RoomSearch from '../common/RoomSearch';
-import SearchResult from '../common/SearchResult';
-import { RoomSearchV3 } from '../common/original/RoomSearchV3';
-import Pagination from '../common/Pagination';
+import RoomSearch from '../common/tailwind/RoomSearch';
+import SearchResult from '../common/tailwind/SearchResult';
+import Pagination from '../common/tailwind/Pagination';
+import { Hero } from '../common/tailwind/Hero';
+import { Amenities } from '../common/tailwind/Amenties';
+import { HomePageFeaturedRooms } from '../common/tailwind/HomePageFeaturedRooms';
+import { HomePageStart } from './HomePageStart';
 
 const HomePage = () => {
   const [rooms, setRooms] = useState([]);
@@ -91,35 +94,22 @@ const HomePage = () => {
   };
 
   // return (
-  //   <div className="bg-gray-50 min-h-screen">
-  //     <RoomSearch onSearch={handleSearchPaging} />
-  //     {/* <RoomSearchV3 onSearch={handleSearch} /> */}
-
-  //     <div className="max-w-7xl mx-auto px-4 py-12">
-  //       {searching ? (
-  //         /* Global Search Loader */
-  //         <div className="flex flex-col items-center justify-center py-20">
-  //           <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600 mb-4"></div>
-  //           <p className="text-gray-500 font-medium">
-  //             Searching for the best rooms...
-  //           </p>
-  //         </div>
-  //       ) : (
-  //         /* Search Results Grid */
-  //         <SearchResult rooms={rooms} />
-  //       )}
-  //     </div>
+  //   <div className="bg-gray-50 min-h-screen pb-20">
+  //     <HomePageStart />
   //   </div>
   // );
+
   return (
     <div className="bg-gray-50 min-h-screen pb-20">
+      <Hero />
       <RoomSearch onSearch={handleNewSearch} />
+      <Amenities />
 
       <div className="max-w-7xl mx-auto px-4 mt-12">
         {loading ? (
           <div className="py-20 text-center">Loading rooms...</div>
         ) : (
-          <>
+          <div>
             <SearchResult rooms={rooms} />
 
             {/* Only show pagination if there's more than one page */}
@@ -130,9 +120,15 @@ const HomePage = () => {
                 onPageChange={handlePageChange}
               />
             )}
-          </>
+          </div>
         )}
       </div>
+      {/* <HomePageFeaturedRooms
+        currentPage={currentPage}
+        totalPages={totalPages}
+        handlePageChange={handlePageChange}
+        handleSearch={handleSearch}
+      /> */}
     </div>
   );
 };

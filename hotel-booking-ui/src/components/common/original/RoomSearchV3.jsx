@@ -3,6 +3,7 @@ import { apiService } from '../../../services/ApiService';
 import { HttpStatusCode } from 'axios';
 import { isEmptyResponse } from '../../../utils/apiUtils';
 import { DayPicker } from 'react-day-picker';
+import { formatToBackendDate } from '../../../utils/dateUtils';
 // import '../../index-backup.css';
 
 export const RoomSearchV3 = ({ handleSearchResult }) => {
@@ -62,25 +63,25 @@ export const RoomSearchV3 = ({ handleSearchResult }) => {
     }
 
     try {
-      const formattedStartDate = startDate
-        ? startDate.toLocaleDateString('en-US')
-        : null;
-      const formattedEndDate = endDate
-        ? endDate.toLocaleDateString('en-US')
-        : null;
+      const checkInDate = formatToBackendDate(
+        startDate ? startDate.toLocaleDateString('en-US') : null
+      );
+      const checkOutDate = formatToBackendDate(
+        endDate ? endDate.toLocaleDateString('en-US') : null
+      );
 
-      const result = await apiService.getAvailableRooms({
-        formattedStartDate,
-        formattedEndDate,
-        roomType,
-      });
+      const result = await apiService.getAvailableRooms(
+        checkInDate,
+        checkOutDate,
+        roomType
+      );
 
       if (result.statusCode === HttpStatusCode.Ok) {
         if (isEmptyResponse(result.rooms)) {
           showError('Room type not currently available for the selected date.');
           return;
         }
-        handleSearchResult(response.rooms);
+        handleSearchResult(result.rooms);
         showError('');
       }
     } catch (error) {

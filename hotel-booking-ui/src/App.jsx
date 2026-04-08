@@ -7,7 +7,6 @@ import { Route } from 'react-router-dom';
 import { RoutePaths } from './constants/RoutePaths';
 import { RegisterPage } from './components/auth/Register';
 import { LoginPage } from './components/auth/LoginPage';
-import RoomSearch from './components/common/RoomSearch';
 import HomePage from './components/home/HomePage';
 
 const App = () => {
@@ -42,6 +41,8 @@ const App = () => {
           <Route path={RoutePaths.LOGIN} element={<LoginPage />} />
           {/* <Route path={RoutePaths.ROOMS} element={<RoomsPage />} /> */}
           <Route path={RoutePaths.HOME} element={<HomePage />} />
+          {/* <Route exact path={RoutePaths.HOME} element={<HomePageStart />} /> */}
+
           {/* Add your other routes here */}
         </Routes>
       </main>

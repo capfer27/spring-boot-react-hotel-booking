@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { HotelDatePickerV2 } from './HotelDatePickerV2';
-import { apiService } from '../../services/ApiService';
+import { apiService } from '../../../services/ApiService';
 
 export const RoomSearchV1 = ({ onSerach }) => {
   const [selectedRange, setSelectedRange] = useState();

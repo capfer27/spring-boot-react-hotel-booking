@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { RoutePaths } from '../../constants/RoutePaths';
-import { isEmptyResponse } from '../../utils/apiUtils';
+import { RoutePaths } from '../../../constants/RoutePaths';
+import { isEmptyResponse } from '../../../utils/apiUtils';
 
 const SearchResult = ({ rooms: searchResult }) => {
   const navigate = useNavigate();

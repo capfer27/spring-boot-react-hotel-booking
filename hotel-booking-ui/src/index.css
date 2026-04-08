@@ -1,6 +1,21 @@
 /* Must be at the top */
 @import 'tailwindcss';
 
+@theme {
+  /* Background Images */
+  --background-image-hero: url('/assets/images/bg.jpg');
+  --background-image-main: url('/assets/images/background.jpg');
+
+  /* Brand Colors */
+  --color-hotel-blue: #1e40af;
+  --color-hotel-gold: #fbbf24;
+}
+
+/* Custom utility for the amenity icons */
+.amenity-icon {
+  @apply w-8 h-8 object-contain transition-transform duration-300 hover:scale-110;
+}
+
 /* Custom Blue Theme for React DayPicker */
 .rdp {
   --rdp-accent-color: #2563eb; /* Your brand blue (Tailwind blue-600) */
