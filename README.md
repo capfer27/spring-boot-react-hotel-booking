@@ -2,6 +2,10 @@
 
 
 # The Current Pages
+
+ - The Home/Main Page
+   ![img_2.png](img_2.png)    
+
  - The register page
     ![img.png](img.png)
 
