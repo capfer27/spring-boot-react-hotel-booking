@@ -20,7 +20,7 @@ public interface RoomService {
 
     ResponseDTO deleteRoom(Long roomId);
 
-    ResponseDTO getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate, RoomType roomType);
+    ResponseDTO getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate, RoomType roomType, Integer page, Integer size);
 
     List<RoomType> getAllRoomTypes();
 

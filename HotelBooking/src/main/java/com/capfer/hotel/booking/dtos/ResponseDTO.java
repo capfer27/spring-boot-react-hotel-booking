@@ -51,4 +51,6 @@ public class ResponseDTO {
 //    @Builder.Default
 //    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss")
     private final LocalDateTime timestamp = LocalDateTime.now();
+
+    private int totalRoomPages; // for pagination
 }

@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
-import { ApiService } from '../../services/ApiService';
-import { RoutePaths } from '../../constants/RoutePaths';
+import { ApiService } from '../../../services/ApiService';
+import { RoutePaths } from '../../../constants/RoutePaths';
 
 export const RoomSearchResult = ({ handleSearchResult }) => {
   const navigate = useNavigate();
@@ -12,7 +12,11 @@ export const RoomSearchResult = ({ handleSearchResult }) => {
       <div className="room-list">
         {handleSearchResult.map((room) => {
           <div className="room-list-item" key={room.id}>
-            <img className="room-list-item-image" src={room.imageUrl} alt="" />
+            <img
+              className="room-list-item-image"
+              src={room.imageUrl}
+              alt={room.roomNumber}
+            />
             <div className="room-details">
               <h3>{room.type}</h3>
               <p>Price: {room.pricePerNight / Night}</p>

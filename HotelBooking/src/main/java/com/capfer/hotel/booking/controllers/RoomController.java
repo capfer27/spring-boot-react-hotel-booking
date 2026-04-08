@@ -7,10 +7,12 @@ import com.capfer.hotel.booking.dtos.UpdateBookingRequest;
 import com.capfer.hotel.booking.enums.RoomType;
 import com.capfer.hotel.booking.services.RoomService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
@@ -73,13 +75,31 @@ public class RoomController {
         return ResponseEntity.ok(roomService.deleteRoom(roomId));
     }
 
-    @GetMapping(path = "/available")
+    @GetMapping(path = "/available/v1")
     public ResponseEntity<ResponseDTO> getAvailableRooms(
             @RequestParam(value = "checkInDate") LocalDate checkInDate,
             @RequestParam(value = "checkOutDate") LocalDate checkOutDate,
-            @RequestParam(value = "roomType", required = false) RoomType roomType
+            @RequestParam(value = "roomType", required = false) RoomType roomType,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
     ) {
-        ResponseDTO availableRooms = roomService.getAvailableRooms(checkInDate, checkOutDate, roomType);
+        ResponseDTO availableRooms = roomService.getAvailableRooms(checkInDate, checkOutDate, roomType, page, size);
+        return ResponseEntity.ok(availableRooms);
+    }
+
+    @GetMapping("/available")
+    public ResponseEntity<ResponseDTO> searchRooms(
+            @RequestParam(value = "checkInDate")  LocalDate checkInDate,
+            @RequestParam(value = "checkOutDate") LocalDate checkOutDate,
+            @RequestParam(value = "roomType", required = false) String roomType,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "20") int size
+    ) {
+
+        // Convert String type to Enum if necessary
+        RoomType type = StringUtils.hasText(roomType) ? RoomType.valueOf(roomType) : null;
+
+        ResponseDTO availableRooms = roomService.getAvailableRooms(checkInDate, checkOutDate, type, page, size);
         return ResponseEntity.ok(availableRooms);
     }
 

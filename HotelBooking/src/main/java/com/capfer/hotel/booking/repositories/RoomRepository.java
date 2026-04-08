@@ -2,6 +2,8 @@ package com.capfer.hotel.booking.repositories;
 
 import com.capfer.hotel.booking.entities.Room;
 import com.capfer.hotel.booking.enums.RoomType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -101,5 +103,34 @@ public interface RoomRepository extends JpaRepository<Room, Long>, JpaSpecificat
     List<Room> findByRoomType(RoomType roomType);
 
     List<Room> findByRoomTypeAndIdNotIn(RoomType roomType, List<Long> bookedRoomIds);
+
+    @Query(value = """
+    SELECT r FROM Room r
+    WHERE NOT EXISTS (
+        SELECT 1 FROM Booking b
+        WHERE b.room = r
+        AND b.checkInDate < :checkOutDate
+        AND b.checkOutDate > :checkInDate
+        AND b.bookingStatus IN ('BOOKED', 'CHECKED_IN')
+    )
+    AND (:roomType IS NULL OR r.roomType = :roomType)
+    """,
+    countQuery = """
+    SELECT count(r) FROM Room r
+    WHERE NOT EXISTS (
+        SELECT 1 FROM Booking b
+        WHERE b.room = r
+        AND b.checkInDate < :checkOutDate
+        AND b.checkOutDate > :checkInDate
+        AND b.bookingStatus IN ('BOOKED', 'CHECKED_IN')
+    )
+    AND (:roomType IS NULL OR r.roomType = :roomType)
+    """)
+    Page<Room> findAvailableRoomsOptimized(
+            @Param("checkInDate") LocalDate checkInDate,
+            @Param("checkOutDate") LocalDate checkOutDate,
+            @Param("roomType") RoomType roomType,
+            Pageable pageable
+    );
 
 }

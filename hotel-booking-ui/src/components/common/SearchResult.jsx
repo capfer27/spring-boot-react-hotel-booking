@@ -8,7 +8,7 @@ const SearchResult = ({ rooms: searchResult }) => {
   console.log('ROOMS: ', searchResult);
 
   // If no rooms are passed or the array is empty
-  if (isEmptyResponse(searchResult.rooms)) {
+  if (isEmptyResponse(searchResult)) {
     return (
       <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300">
         <p className="text-gray-400 italic">
@@ -20,7 +20,7 @@ const SearchResult = ({ rooms: searchResult }) => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      {searchResult.rooms.map((room) => (
+      {searchResult.map((room) => (
         <div
           key={room.id}
           className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col group"

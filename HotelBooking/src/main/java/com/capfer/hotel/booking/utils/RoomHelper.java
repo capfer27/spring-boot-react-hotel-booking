@@ -5,6 +5,7 @@ import com.capfer.hotel.booking.dtos.RoomDTO;
 import com.capfer.hotel.booking.entities.Room;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Page;
 
 import java.math.BigDecimal;
 import java.time.temporal.ChronoUnit;
@@ -26,5 +27,9 @@ public final class RoomHelper {
         BigDecimal pricePerNight = room.getPricePerNight();
         long days = ChronoUnit.DAYS.between(bookingDTO.getCheckInDate(), bookingDTO.getCheckOutDate());
         return pricePerNight.multiply(BigDecimal.valueOf(days));
+    }
+
+    public static List<RoomDTO> toRoomsDTOs(Page<Room> rooms, ModelMapper mapper) {
+        return mapper.map(rooms.getContent(), new TypeToken<List<RoomDTO>>(){}.getType());
     }
 }

@@ -14,6 +14,9 @@ import io.micrometer.observation.annotation.Observed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -212,7 +215,13 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseDTO getAvailableRooms(LocalDate checkInDate, LocalDate checkOutDate, RoomType roomType) {
+    public ResponseDTO getAvailableRooms(
+            LocalDate checkInDate,
+            LocalDate checkOutDate,
+            RoomType roomType,
+            Integer page,
+            Integer size
+    ) {
         // Ensure check-in date is not before today
         if (checkInDate.isBefore(LocalDate.now())) {
             throw new InvalidBookingStateAndDateException("Check in date cannot be before today");
@@ -227,15 +236,19 @@ public class RoomServiceImpl implements RoomService {
             throw new InvalidBookingStateAndDateException("Check in date cannot be same as check out date");
         }
 
+        // PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
+        Pageable pageable = PageRequest.of(page, size);
+
         try (var source = StructuredTaskScope.open(StructuredTaskScope.Joiner.allSuccessfulOrThrow())) {
 
-            Subtask<List<Room>> availableRooms = source.fork(() ->
-                    roomRepository.findAvailableRoomsOptimized(checkInDate, checkOutDate, roomType)
+            Subtask<Page<Room>> availableRooms = source.fork(() ->
+                    roomRepository.findAvailableRoomsOptimized(checkInDate, checkOutDate, roomType, pageable)
             );
             
             source.join();
 
-            List<RoomDTO> roomsDTOs = RoomHelper.toRoomsDTOs(availableRooms.get(), modelMapper);
+            Page<Room> rooms = availableRooms.get();
+            List<RoomDTO> roomsDTOs = RoomHelper.toRoomsDTOs(rooms.getContent(), modelMapper);
             
             log.info("Found {} available rooms", roomsDTOs.size());
             
@@ -243,6 +256,7 @@ public class RoomServiceImpl implements RoomService {
                     .statusCode(HttpStatus.OK.value())
                     .message("Available rooms found successfully")
                     .rooms(roomsDTOs)
+                    .totalRoomPages(rooms.getTotalPages())
                     .build();
         } catch (Exception e) {
             log.error("Failed to retrieve available rooms {}", e.getMessage());

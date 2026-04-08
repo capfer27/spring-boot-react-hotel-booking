@@ -8,10 +8,10 @@ export const RoutePaths = {
   MY_BOOKINGS: '/my-bookings',
   FIND_BOOKING: '/find-bookings',
   ADMIN: '/admin',
-  ADMIN_EDIT: (id) => `/ADMIN/edit/${id}`,
+  ADMIN_EDIT: (id) => `/admin/edit-room/${id}`,
   // Dynamic routes
   // ROOM_DETAILS: (id) => `/rooms/${id}`,
   // BOOKING_DETAILS: (ref) => `/bookings/${ref}`,
-  ROOM_DETAILS: (id) => `/room/${id}`,
+  ROOM_DETAILS: (id) => `/room-details/${id}`,
   SETTINGS: '/settings',
 };
