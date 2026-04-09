@@ -1,4 +1,4 @@
-# Full stack Hotel Booking System with Spring Boot, Postgres, React and Tailwind CSS
+# Full stack Hotel Booking System with Spring Boot, React, Postgres, Docker, Stripe, and Tailwind CSS
 
 
 # The Current Pages
