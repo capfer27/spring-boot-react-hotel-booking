@@ -17,7 +17,7 @@ export const RoomSearchResult = ({ roomSearchResult }) => {
             <div className="room-list-item" key={room.id}>
               <img
                 className="room-list-item-image"
-                src={room.imageUrl}
+                src={'/assets/' + room.imageUrl}
                 alt={room.roomNumber}
               />
               <div className="room-details">

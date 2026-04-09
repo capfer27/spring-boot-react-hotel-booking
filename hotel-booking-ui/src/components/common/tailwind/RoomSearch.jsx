@@ -31,7 +31,7 @@ const RoomSearch = ({ onSearch }) => {
   const handleChange = (event) => {
     const { name, value } = event.target;
     setSearchQuery({ ...searchQuery, [name]: value });
-    console.log(name, value, searchQuery);
+    // console.log(name, value, searchQuery);
     if (error) {
       setError(''); // Clear error when user types.
     }
@@ -52,7 +52,7 @@ const RoomSearch = ({ onSearch }) => {
       return;
     }
 
-    // Pass clean data back to parent component or trigger API
+    // Pass clean data back to parent component to trigger API call
     onSearch(searchQuery);
   };
 

@@ -38,7 +38,11 @@ import java.util.concurrent.StructuredTaskScope.Subtask;
 //@Observed(name = "room.service") // Spring Boot 4 / Micrometer 2 Observability
 public class RoomServiceImpl implements RoomService {
 
-    private static final String IMAGE_UPLOAD_DIR = System.getProperty("user.dir") + "/uploads/rooms/";
+//    private static final String IMAGE_UPLOAD_DIR = System.getProperty("user.dir") + "/uploads/rooms/";
+
+    // Image directory for the frontend app
+    private static final String FRONTEND_IMAGE_UPLOAD_DIR =
+            "/Users/carlos/guine-projects/hotel-booking-app/hotel-booking-ui/public/assets/rooms/";
 
     private final RoomRepository roomRepository;
     private final ModelMapper modelMapper;
@@ -301,7 +305,7 @@ public class RoomServiceImpl implements RoomService {
         }
 
         // Create the upload directory if it doesn't exist
-        java.io.File uploadDir = new java.io.File(IMAGE_UPLOAD_DIR);
+        java.io.File uploadDir = new java.io.File(FRONTEND_IMAGE_UPLOAD_DIR);
         if (!uploadDir.exists()) {
             uploadDir.mkdirs();
         }
@@ -309,7 +313,7 @@ public class RoomServiceImpl implements RoomService {
         String uniqueFileName = UUID.randomUUID() + "_" + imageFile.getOriginalFilename();
 
         // Get absolute path to save the file
-        String filePath = IMAGE_UPLOAD_DIR + uniqueFileName;
+        String filePath = FRONTEND_IMAGE_UPLOAD_DIR + uniqueFileName;
 
         try {
 
@@ -321,11 +325,12 @@ public class RoomServiceImpl implements RoomService {
 
             // 2. Solution using Spring's FileCopyUtils
             // FileCopyUtils.copy(imageFile.getBytes(), new java.io.File(filePath));
-            return filePath;
+            //return filePath;
         } catch (Exception e) {
             log.error("Error saving image file: {}", e.getMessage());
             throw new IOException("Failed to save image file", e);
         }
 
+        return "/rooms/" + uniqueFileName;
     }
 }

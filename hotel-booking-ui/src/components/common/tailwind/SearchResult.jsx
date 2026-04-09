@@ -3,12 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { RoutePaths } from '../../../constants/RoutePaths';
 import { isEmptyResponse } from '../../../utils/apiUtils';
 
-const SearchResult = ({ rooms: searchResult }) => {
+const SearchResult = ({ rooms }) => {
   const navigate = useNavigate();
-  console.log('ROOMS: ', searchResult);
+  console.log('ROOMS: ', rooms);
 
   // If no rooms are passed or the array is empty
-  if (isEmptyResponse(searchResult)) {
+  if (isEmptyResponse(rooms)) {
     return (
       <div className="text-center py-20 bg-white rounded-2xl border border-dashed border-gray-300">
         <p className="text-gray-400 italic">
@@ -20,7 +20,7 @@ const SearchResult = ({ rooms: searchResult }) => {
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-      {searchResult.map((room) => (
+      {rooms.map((room) => (
         <div
           key={room.id}
           className="bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col group"
@@ -28,7 +28,7 @@ const SearchResult = ({ rooms: searchResult }) => {
           {/* Room Image */}
           <div className="relative overflow-hidden h-48">
             <img
-              src={room.imageUrl}
+              src={'/assets/' + room.imageUrl}
               alt={room.roomType}
               className="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
             />

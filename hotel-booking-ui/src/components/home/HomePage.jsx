@@ -85,7 +85,7 @@ const HomePage = () => {
         checkOutDate,
         roomType
       );
-      setRooms(results);
+      setRooms(results.rooms);
     } catch (err) {
       console.error('Search failed', err);
     } finally {
@@ -97,6 +97,16 @@ const HomePage = () => {
   //   <div className="bg-gray-50 min-h-screen pb-20">
   //     <HomePageStart />
   //   </div>
+  // );
+
+  // return (
+  //   <HomePageFeaturedRooms
+  //     currentPage={currentPage}
+  //     totalPages={totalPages}
+  //     handlePageChange={handlePageChange}
+  //     rooms={rooms}
+  //     handleSearch={handleSearch}
+  //   />
   // );
 
   return (
