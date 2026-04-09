@@ -59,8 +59,12 @@ public class RoomController {
     }
 
     @GetMapping(path = "/all")
-    public ResponseEntity<ResponseDTO> getAllRooms() {
-        ResponseDTO allRooms = roomService.getAllRooms();
+    public ResponseEntity<ResponseDTO> getAllRooms(
+            @RequestParam(value = "currentPage", defaultValue = "0") int currentPage,
+            @RequestParam(value = "totalPages", defaultValue = "20") int totalPages,
+            @RequestParam(value = "roomType", required = false) RoomType roomType
+    ) {
+        ResponseDTO allRooms = roomService.getAllRooms(currentPage, totalPages, roomType);
         return ResponseEntity.ok(allRooms);
     }
 

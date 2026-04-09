@@ -268,9 +268,16 @@ class ApiService {
     }
   }
 
-  async getAllRooms() {
+  async getAllRooms(currentPage, roomsPerPage, roomType) {
+    console.log('SelectedType: ', roomType);
     try {
-      const response = await this.#api.get(ROOMS_ENDPOINTS.GET_ALL.url);
+      const response = await this.#api.get(ROOMS_ENDPOINTS.GET_ALL.url, {
+        params: {
+          currentPage,
+          roomsPerPage,
+          roomType,
+        },
+      });
       return response.data;
     } catch (error) {
       this.#handleError('Failed to retrieve all rooms', error);

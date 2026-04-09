@@ -8,6 +8,7 @@ import { RoutePaths } from './constants/RoutePaths';
 import { RegisterPage } from './components/auth/Register';
 import { LoginPage } from './components/auth/LoginPage';
 import HomePage from './components/home/HomePage';
+import AllRoomsPage from './components/bookingRooms/AllRoomsPage';
 
 const App = () => {
   const isAuthenticated = ApiService.isAuthenticated();
@@ -39,7 +40,7 @@ const App = () => {
         <Routes>
           <Route path={RoutePaths.REGISTER} element={<RegisterPage />} />
           <Route path={RoutePaths.LOGIN} element={<LoginPage />} />
-          {/* <Route path={RoutePaths.ROOMS} element={<RoomsPage />} /> */}
+          <Route path={RoutePaths.ROOMS} element={<AllRoomsPage />} />
           <Route path={RoutePaths.HOME} element={<HomePage />} />
           {/* <Route exact path={RoutePaths.HOME} element={<HomePageStart />} /> */}
 

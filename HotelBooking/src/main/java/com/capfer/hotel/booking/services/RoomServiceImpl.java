@@ -161,19 +161,29 @@ public class RoomServiceImpl implements RoomService {
 
     @Override
     @Transactional(readOnly = true)
-    public ResponseDTO getAllRooms() {
+    public ResponseDTO getAllRooms(int currentPage, int totalPages, RoomType roomType) {
+        Pageable pageable = PageRequest.of(currentPage, totalPages, Sort.Direction.DESC, "id");
+
         try (var scope = StructuredTaskScope.open(StructuredTaskScope.Joiner.allSuccessfulOrThrow())) {
-            Subtask<List<Room>> rooms = scope.fork(() -> roomRepository.findAll(Sort.by(Sort.Direction.DESC, "id")));
+            Subtask<Page<Room>> rooms = scope.fork(() -> roomRepository.findAll(pageable));
 
             scope.join();
 
-            List<Room> foundRooms = rooms.get();
+            Page<Room> roomPage = rooms.get();
+            List<Room> foundRooms = roomPage.getContent();
+
+            if (roomType != null) {
+                foundRooms = foundRooms.stream()
+                    .filter(room -> room.getRoomType() == roomType)
+                    .toList();
+            }
             List<RoomDTO> roomDTOS = RoomHelper.toRoomsDTOs(foundRooms, modelMapper);
 
             return ResponseDTO.builder()
                     .message("Rooms retrieved successfully")
                     .statusCode(HttpStatus.OK.value())
                     .rooms(roomDTOS)
+                    .totalRoomPages(roomPage.getTotalPages())
                     .build();
 
         } catch (InterruptedException | StructuredTaskScope.FailedException e) {

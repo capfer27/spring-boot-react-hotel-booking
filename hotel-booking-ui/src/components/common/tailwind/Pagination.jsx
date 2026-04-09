@@ -1,5 +1,6 @@
 const Pagination = ({ currentPage, totalPages, onPageChange }) => {
   const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+  console.log('Pages: ', pages);
 
   return (
     <nav className="flex justify-center items-center space-x-2 py-8">

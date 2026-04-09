@@ -62,7 +62,7 @@ const SearchResult = ({ rooms }) => {
                 onClick={() => navigate(RoutePaths.ROOM_DETAILS(room.id))}
                 className="bg-gray-900 text-white px-5 py-2 rounded-lg font-semibold hover:bg-blue-600 transition-colors transform active:scale-95"
               >
-                Book Now
+                View/Book Now
               </button>
             </div>
           </div>

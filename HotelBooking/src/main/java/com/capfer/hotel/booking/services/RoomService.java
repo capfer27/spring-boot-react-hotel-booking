@@ -14,7 +14,7 @@ public interface RoomService {
 
     ResponseDTO updateRoom(RoomDTO roomDTO, MultipartFile imageFile);
 
-    ResponseDTO getAllRooms();
+    ResponseDTO getAllRooms(int currentPage, int totalPages, RoomType roomType);
 
     ResponseDTO getRoomById(Long roomId);
 
